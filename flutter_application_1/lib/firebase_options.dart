@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:666799509204:android:c6b6468ffafde2f8e43541',
     messagingSenderId: '666799509204',
     projectId: 'bndr-45287',
+    databaseURL: 'https://bndr-45287-default-rtdb.firebaseio.com',
     storageBucket: 'bndr-45287.appspot.com',
   );
 
@@ -62,7 +63,9 @@ class DefaultFirebaseOptions {
     appId: '1:666799509204:ios:54325dc1eff3d97ee43541',
     messagingSenderId: '666799509204',
     projectId: 'bndr-45287',
+    databaseURL: 'https://bndr-45287-default-rtdb.firebaseio.com',
     storageBucket: 'bndr-45287.appspot.com',
     iosBundleId: 'com.example.flutterApplication1',
   );
+
 }
