@@ -127,7 +127,7 @@ class AuthService {
         textColor: Colors.white,
         fontSize: 14.0,
       );
-    } catch (e) {}
+    }
   }
 
   //simple signout

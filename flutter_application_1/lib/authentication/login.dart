@@ -27,16 +27,7 @@ class Login extends StatelessWidget {
           },
           child: Container(
             margin: const EdgeInsets.only(left: 10),
-            decoration: const BoxDecoration(
-              color: Color(0xffF7F7F9),
-              shape: BoxShape.circle
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Colors.black,
-              ),
-            ),
+            padding: const EdgeInsets.all(10),
           ),
         ),
       ),
