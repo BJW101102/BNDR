@@ -8,6 +8,7 @@ import '../authentication/login.dart';
 class AuthService {
   final _firestore = FirebaseFirestore.instance;
 
+//the signup fields that a user fills out with their info
   Future<void> signup(
       {required String email,
       required String password,
@@ -16,33 +17,62 @@ class AuthService {
       required String username,
       required BuildContext context}) async {
     try {
-      // Step 1: Create the user with Firebase Authentication
-      final userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      final user = userCredential.user;
       final userinfo = <String, dynamic>{
         'firstName': firstName,
         'lastName': lastName,
         'username': username,
         'email': email,
+        'friends': [], //no friends
+        'incoming friends' : [],
+        'outgoing friends' : []
       };
-
-      // Step 2: Store the additional user information in Firestore
-      if (user?.uid != null) {
-        await _firestore
+      //simple method to check if there is alr a user with that username
+      Future<bool> isUsernameTaken(String username) async {
+        final QuerySnapshot result = await _firestore
             .collection('users')
-            .doc(user?.uid.toString())
-            .set(userinfo);
+            .where('username', isEqualTo: username)
+            .get();
+        return result.docs.isNotEmpty;
       }
+      //the bool of if the username exists
+      bool usernameExists = await isUsernameTaken(username);
+      //if username doesnt exist
+      if (!usernameExists) {
+        //make the fire auth user in the authentication database
+        final userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        //user that is returned with their UID
+        final user = userCredential.user;
 
-      // Step 3: Navigate to Home page
-      await Future.delayed(const Duration(seconds: 1));
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => const Home()));
+        //check to see if the authenticaiton worked and they had a unique email
+        if (user?.uid != null) {
+          //add the user to the firestore database
+          await _firestore
+              .collection('users')
+              .doc(user?.uid.toString())
+              .set(userinfo);
+          //everything worked correctly so lets go to the homepage
+          await Future.delayed(const Duration(seconds: 1));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const Home()));
+        }
+        //if something goes wrong throw all these errors
+      } else {
+        String message = 'Username is already in use. Please try again.';
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.SNACKBAR,
+          backgroundColor: Colors.black54,
+          textColor: Colors.white,
+          fontSize: 14.0,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'weak-password') {
@@ -70,7 +100,7 @@ class AuthService {
       );
     }
   }
-
+  //sign in method thing that gets the fields needed to signin 
   Future<void> signin(
       {required String email,
       required String password,
@@ -100,6 +130,7 @@ class AuthService {
     } catch (e) {}
   }
 
+  //simple signout
   Future<void> signout({required BuildContext context}) async {
     await FirebaseAuth.instance.signOut();
     await Future.delayed(const Duration(seconds: 1));
