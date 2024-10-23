@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+
 
 class Planner extends StatefulWidget {
   const Planner({super.key});
@@ -54,6 +56,20 @@ class _GoogleMapFlutterState extends State<Planner> {
       return Scaffold(
         body: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GooglePlaceAutoCompleteTextField(
+                googleAPIKey: 'AIzaSyD_eIXoIx5zyyzehtsKDcjiaAyjaZm5A0A',
+                textEditingController: TextEditingController(),
+                inputDecoration: InputDecoration(
+                  hintText: 'Search here',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            
+
             // Planner in the top half
             SizedBox(
               height: screenHeight / 2,
