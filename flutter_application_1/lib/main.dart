@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/authentication/login.dart';
 import 'package:flutter_application_1/firebase_options.dart';
+import 'package:flutter_application_1/friends/current_friends.dart';
 import 'package:flutter_application_1/pages/planner.dart';
+import 'package:flutter_application_1/pages/event_setup.dart';
 
 
 Future<void> main() async {
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Planner()
+      home: FriendsPage()
     );
   }
 }

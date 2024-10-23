@@ -54,6 +54,10 @@ class AuthService {
               .collection('users')
               .doc(user?.uid.toString())
               .set(userinfo);
+          //adding the event collection to a user
+          _firestore
+              .collection('users')
+              .doc(user?.uid.toString()).collection('event list');
           //everything worked correctly so lets go to the homepage
           await Future.delayed(const Duration(seconds: 1));
           Navigator.pushReplacement(
