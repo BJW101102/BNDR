@@ -63,6 +63,35 @@ class _PlannerState extends State<Planner> {
     }
   }
 
+  void placeSelection(String input) async {
+    const String apiKey = "AIzaSyD_eIXoIx5zyyzehtsKDcjiaAyjaZm5A0A";
+    try {
+      String bassedUrl =
+          "https://maps.googleapis.com/maps/api/place/details/json";
+      String request =
+          '$bassedUrl?place_id=$input&key=$apiKey&sessiontoken=$token';
+      var response = await http.get(Uri.parse(request));
+      var data = json.decode(response.body);
+      if (kDebugMode) {
+        print(data);
+      }
+      if (response.statusCode == 200) {
+        var location = data['result']['geometry']['location'];
+        LatLng newLocation = LatLng(location['lat'], location['lng']);
+
+        setState(() {
+          markers.add(Marker(
+              markerId: const MarkerId("Point of Interest"),
+              position: newLocation));
+        });
+      } else {
+        throw Exception("Failed to load location");
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   void _getUserLocation() async {
     try {
       Position position = await currentPosition();
@@ -76,8 +105,8 @@ class _PlannerState extends State<Planner> {
         );
       });
     } catch (e) {
-      print('Error fetching user location: $e');
-      // Optionally, set a default location or handle the error
+      print('Error fetching user newLocation: $e');
+      // Optionally, set a default newLocation or handle the error
       setState(() {
         myCurrentLocation = const LatLng(0.0, 0.0);
       });
@@ -91,69 +120,89 @@ class _PlannerState extends State<Planner> {
         body: Center(child: CircularProgressIndicator()),
       );
     } else {
-      // Get the total height of the screen
-      double screenHeight = MediaQuery.of(context).size.height;
-
       return Scaffold(
-        body: Container(
-          margin: EdgeInsets.only(top: 60),
-          child: Column(
-            children: [
-              TextField(
-                controller: searchController,
-                decoration: InputDecoration(hintText: "Search Places..."),
-                onChanged: (value) {
-                  setState(() {});
+        body: Stack(
+          children: [
+            // Google Map as the background layer
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: GoogleMap(
+                myLocationButtonEnabled: false,
+                markers: markers,
+                onMapCreated: (GoogleMapController controller) {
+                  googleMapController = controller;
                 },
-              ),
-              Visibility(
-                visible: searchController.text.isEmpty ? false : true,
-                child: Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Text(
-                          listOfLocations[index]["description"],
-                        ),
-                      );
-                    },
-                  ),
+                initialCameraPosition: CameraPosition(
+                  target: myCurrentLocation!,
+                  zoom: 14,
                 ),
               ),
-
-              // Planner in the top half
-              SizedBox(
-                height: screenHeight / 2,
-                child: GoogleMap(
-                  myLocationButtonEnabled: false,
-                  markers: markers,
-                  onMapCreated: (GoogleMapController controller) {
-                    googleMapController = controller;
-                  },
-                  initialCameraPosition: CameraPosition(
-                    target: myCurrentLocation!,
-                    zoom: 14,
-                  ),
-                ),
-              ),
-              // Bottom half content
-              Expanded(
-                child: Container(
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: Text(
-                      "Bottom half of the screen",
-                      style: TextStyle(fontSize: 24),
+            ),
+            // Positioned widget for search and list overlay
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.white,
+                padding: EdgeInsets.only(top: 60, left: 16, right: 16),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                          hintText: "Search Places...",
+                          filled: true,
+                          fillColor: Colors.white),
+                      onChanged: (value) {
+                        setState(() {});
+                      },
                     ),
+                    Visibility(
+                      visible: searchController.text.isNotEmpty,
+                      child: Container(
+                        height: 200, // Adjust as necessary
+                        color: Colors.white.withOpacity(0.9),
+                        child: ListView.builder(
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: TextButton(
+                                onPressed: () {
+                                  placeSelection(
+                                      listOfLocations[index]["place_id"]);
+                                },
+                                child:
+                                    Text(listOfLocations[index]["description"]),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Bottom half content
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.grey[200],
+                height: MediaQuery.of(context).size.height / 3,
+                child: Center(
+                  child: Text(
+                    "Bottom half of the screen",
+                    style: TextStyle(fontSize: 24),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
