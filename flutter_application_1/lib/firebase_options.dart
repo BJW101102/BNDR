@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -55,7 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '666799509204',
     projectId: 'bndr-45287',
     databaseURL: 'https://bndr-45287-default-rtdb.firebaseio.com',
-    storageBucket: 'bndr-45287.appspot.com',
+    storageBucket: 'bndr-45287.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -64,8 +61,18 @@ class DefaultFirebaseOptions {
     messagingSenderId: '666799509204',
     projectId: 'bndr-45287',
     databaseURL: 'https://bndr-45287-default-rtdb.firebaseio.com',
-    storageBucket: 'bndr-45287.appspot.com',
+    storageBucket: 'bndr-45287.firebasestorage.app',
     iosBundleId: 'com.example.flutterApplication1',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCo7Q55CrqLT34T9MyTjwnrP4qIuXRc5yg',
+    appId: '1:666799509204:web:21ec8bc3d1e4d1c2e43541',
+    messagingSenderId: '666799509204',
+    projectId: 'bndr-45287',
+    authDomain: 'bndr-45287.firebaseapp.com',
+    databaseURL: 'https://bndr-45287-default-rtdb.firebaseio.com',
+    storageBucket: 'bndr-45287.firebasestorage.app',
   );
 
 }
