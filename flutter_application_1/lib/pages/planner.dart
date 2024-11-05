@@ -18,7 +18,7 @@ class Planner extends StatefulWidget {
 }
 
 class _PlannerState extends State<Planner> {
-  LatLng? myCurrentLocation;
+  LatLng myCurrentLocation = LatLng(0, 0);
   late GoogleMapController googleMapController;
   Set<Marker> markers = {};
   final searchController = TextEditingController();
@@ -117,10 +117,19 @@ class _PlannerState extends State<Planner> {
       Position position = await currentPosition();
       setState(() {
         myCurrentLocation = LatLng(position.latitude, position.longitude);
+         googleMapController.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(
+                    myCurrentLocation.latitude, myCurrentLocation.longitude),
+                zoom: 14,
+              ),
+            ),
+          );
         markers.add(
           Marker(
             markerId: const MarkerId('currentLocation'),
-            position: myCurrentLocation!,
+            position: myCurrentLocation,
           ),
         );
       });
