@@ -117,15 +117,15 @@ class _PlannerState extends State<Planner> {
       Position position = await currentPosition();
       setState(() {
         myCurrentLocation = LatLng(position.latitude, position.longitude);
-         googleMapController.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: LatLng(
-                    myCurrentLocation.latitude, myCurrentLocation.longitude),
-                zoom: 14,
-              ),
+        googleMapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(
+                  myCurrentLocation.latitude, myCurrentLocation.longitude),
+              zoom: 14,
             ),
-          );
+          ),
+        );
         markers.add(
           Marker(
             markerId: const MarkerId('currentLocation'),
@@ -227,7 +227,9 @@ class _PlannerState extends State<Planner> {
                       height: 200,
                       color: Colors.white.withOpacity(0.9),
                       child: ListView.builder(
-                        itemCount: 5,
+                        itemCount: listOfLocations.length < 5
+                            ? listOfLocations.length
+                            : 5,
                         itemBuilder: (context, index) {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
