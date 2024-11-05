@@ -1,7 +1,6 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/authentication/auth_service.dart';
+import 'package:flutter_application_1/controllers/auth_service.dart';
 import 'package:flutter_application_1/authentication/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -33,7 +32,7 @@ class Login extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-         padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -41,27 +40,31 @@ class Login extends StatelessWidget {
                 child: Text(
                   'Hello Again',
                   style: GoogleFonts.raleway(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 32
-                    )
-                  ),
+                      textStyle: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 32)),
                 ),
               ),
-              const SizedBox(height: 80,),
-               _emailAddress(),
-               const SizedBox(height: 20,),
-               _password(),
-               const SizedBox(height: 50,),
-               _signin(context),
+              const SizedBox(
+                height: 80,
+              ),
+              _emailAddress(),
+              const SizedBox(
+                height: 20,
+              ),
+              _password(),
+              const SizedBox(
+                height: 50,
+              ),
+              _signin(context),
             ],
           ),
         ),
       ),
     );
   }
-  
+
   Widget _emailAddress() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -70,30 +73,27 @@ class Login extends StatelessWidget {
         Text(
           'Email Address',
           style: GoogleFonts.raleway(
-            textStyle: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 16
-            )
-          ),
+              textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16)),
         ),
-        const SizedBox(height: 16,),
+        const SizedBox(
+          height: 16,
+        ),
         TextField(
           controller: _emailController,
           decoration: InputDecoration(
-            filled: true,
-            hintText: 'mahdiforwork@gmail.com',
-            hintStyle: const TextStyle(
-              color: Color(0xff6A6A6A),
-              fontWeight: FontWeight.normal,
-              fontSize: 14
-            ),
-            fillColor: const Color(0xffF7F7F9) ,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(14)
-            )
-          ),
+              filled: true,
+              hintText: 'mahdiforwork@gmail.com',
+              hintStyle: const TextStyle(
+                  color: Color(0xff6A6A6A),
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14),
+              fillColor: const Color(0xffF7F7F9),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(14))),
         )
       ],
     );
@@ -107,25 +107,23 @@ class Login extends StatelessWidget {
         Text(
           'Password',
           style: GoogleFonts.raleway(
-            textStyle: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 16
-            )
-          ),
+              textStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16)),
         ),
-        const SizedBox(height: 16,),
+        const SizedBox(
+          height: 16,
+        ),
         TextField(
           obscureText: true,
           controller: _passwordController,
           decoration: InputDecoration(
-            filled: true,
-            fillColor: const Color(0xffF7F7F9) ,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(14)
-            )
-          ),
+              filled: true,
+              fillColor: const Color(0xffF7F7F9),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(14))),
         )
       ],
     );
@@ -143,10 +141,9 @@ class Login extends StatelessWidget {
       ),
       onPressed: () async {
         await AuthService().signin(
-          email: _emailController.text,
-          password: _passwordController.text,
-          context: context
-        );
+            email: _emailController.text,
+            password: _passwordController.text,
+            context: context);
       },
       child: const Text("Sign In"),
     );
@@ -156,36 +153,29 @@ class Login extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: [
+          textAlign: TextAlign.center,
+          text: TextSpan(children: [
             const TextSpan(
-                text: "New User? ",
-                style: TextStyle(
+              text: "New User? ",
+              style: TextStyle(
                   color: Color(0xff6A6A6A),
                   fontWeight: FontWeight.normal,
-                  fontSize: 16
-                ),
-              ),
-              TextSpan(
+                  fontSize: 16),
+            ),
+            TextSpan(
                 text: "Create Account",
                 style: const TextStyle(
                     color: Color(0xff1A1D1E),
                     fontWeight: FontWeight.normal,
-                    fontSize: 16
-                  ),
-                  recognizer: TapGestureRecognizer()..onTap = () {
+                    fontSize: 16),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => Signup()
-                      ),
+                      MaterialPageRoute(builder: (context) => Signup()),
                     );
-                  }
-              ),
-          ]
-        )
-      ),
+                  }),
+          ])),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/authentication/auth_service.dart';
+import 'package:flutter_application_1/controllers/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatelessWidget {
@@ -12,33 +12,33 @@ class Home extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                  'Hello👋',
-                  style: GoogleFonts.raleway(
+                'Hello👋',
+                style: GoogleFonts.raleway(
                     textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    )
-                  ),
-                ),
-                const SizedBox(height: 10,),
-                Text(
-                  FirebaseAuth.instance.currentUser!.email!.toString(),
-                  style: GoogleFonts.raleway(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20)),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                FirebaseAuth.instance.currentUser!.email!.toString(),
+                style: GoogleFonts.raleway(
                     textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    )
-                  ),
-                ),
-                 const SizedBox(height: 30,),
-                _logout(context)
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20)),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              _logout(context)
             ],
           ),
         ),

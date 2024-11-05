@@ -8,6 +8,14 @@ import '../authentication/login.dart';
 class AuthService {
   final _firestore = FirebaseFirestore.instance;
 
+  Future<bool> isUsernameTaken(String username) async {
+    final QuerySnapshot result = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .get();
+    return result.docs.isNotEmpty;
+  }
+
 //the signup fields that a user fills out with their info
   Future<void> signup(
       {required String email,
@@ -22,20 +30,12 @@ class AuthService {
         'lastName': lastName,
         'username': username,
         'email': email,
-        'friends': [], //no friends
-        'incoming friends' : [],
-        'outgoing friends' : []
+        'friends': {'incoming': [], 'outgoing': [], 'current': []}, //no friends
+        'events': []
       };
-      //simple method to check if there is alr a user with that username
-      Future<bool> isUsernameTaken(String username) async {
-        final QuerySnapshot result = await _firestore
-            .collection('users')
-            .where('username', isEqualTo: username)
-            .get();
-        return result.docs.isNotEmpty;
-      }
-      //the bool of if the username exists
+
       bool usernameExists = await isUsernameTaken(username);
+
       //if username doesnt exist
       if (!usernameExists) {
         //make the fire auth user in the authentication database
@@ -45,19 +45,13 @@ class AuthService {
           password: password,
         );
         //user that is returned with their UID
-        final user = userCredential.user;
+        final userID = userCredential.user?.uid;
 
         //check to see if the authenticaiton worked and they had a unique email
-        if (user?.uid != null) {
+        if (userID != null) {
           //add the user to the firestore database
-          await _firestore
-              .collection('users')
-              .doc(user?.uid.toString())
-              .set(userinfo);
-          //adding the event collection to a user
-          _firestore
-              .collection('users')
-              .doc(user?.uid.toString()).collection('event list');
+          await _firestore.collection('users').doc(userID).set(userinfo);
+
           //everything worked correctly so lets go to the homepage
           await Future.delayed(const Duration(seconds: 1));
           Navigator.pushReplacement(
@@ -104,7 +98,8 @@ class AuthService {
       );
     }
   }
-  //sign in method thing that gets the fields needed to signin 
+
+  //sign in method thing that gets the fields needed to signin
   Future<void> signin(
       {required String email,
       required String password,
