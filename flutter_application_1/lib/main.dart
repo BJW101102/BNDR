@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/firebase_options.dart';
-import 'package:flutter_application_1/pages/event_setup.dart';
-import 'package:flutter_application_1/pages/planner.dart';
-import 'package:flutter_application_1/pages/home.dart';
+// import 'package:flutter_application_1/pages/event_setup.dart';
+// import 'package:flutter_application_1/pages/planner.dart';
+// import 'package:flutter_application_1/pages/home.dart';
+// import 'package:flutter_application_1/authentication/login.dart';
+import 'package:flutter_application_1/test_ui/test_login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +42,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = <Widget>[
     // EventPage(),
     // Planner(),
-    Home(),
+    // Home(),
+    SignupTestScreen()
   ];
 
   void on_ItemTapped(int index) {
