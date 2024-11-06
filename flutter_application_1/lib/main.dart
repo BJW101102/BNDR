@@ -9,7 +9,6 @@ import 'package:flutter_application_1/test_ui/test_login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -42,8 +41,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = <Widget>[
     // EventPage(),
     // Planner(),
-    // Home(),
-    SignupTestScreen()
+    // Home()
+    AuthTestScreen()
   ];
 
   void on_ItemTapped(int index) {

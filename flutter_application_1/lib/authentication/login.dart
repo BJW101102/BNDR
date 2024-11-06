@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/controllers/auth_service.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:flutter_application_1/authentication/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -141,9 +141,9 @@ class Login extends StatelessWidget {
       ),
       onPressed: () async {
         await AuthService().signin(
-            email: _emailController.text,
-            password: _passwordController.text,
-            context: context);
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
       },
       child: const Text("Sign In"),
     );

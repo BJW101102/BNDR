@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/controllers/auth_service.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:flutter_application_1/authentication/login.dart';
 import 'package:google_fonts/google_fonts.dart';
 

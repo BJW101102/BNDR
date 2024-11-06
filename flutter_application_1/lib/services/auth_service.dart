@@ -1,139 +1,72 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; // Add Firestore package
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../pages/home.dart';
-import '../authentication/login.dart';
 
 class AuthService {
-  final _firestore = FirebaseFirestore.instance;
-
-  Future<bool> isUsernameTaken(String username) async {
-    final QuerySnapshot result = await _firestore
-        .collection('users')
-        .where('username', isEqualTo: username)
-        .get();
-    return result.docs.isNotEmpty;
-  }
+  final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
 //the signup fields that a user fills out with their info
-  Future<void> signup(
-      {required String email,
-      required String password,
-      required String firstName,
-      required String lastName,
-      required String username,
-      required BuildContext context}) async {
+  Future<UserCredential> signup({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String username,
+  }) async {
     try {
-      final userinfo = <String, dynamic>{
+      // Create user with Firebase Authentication
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String userID = userCredential.user!.uid;
+
+      // Store additional user info in Firestore
+      await _db.collection('users').doc(userID).set({
+        'userID': userID,
         'firstName': firstName,
         'lastName': lastName,
         'username': username,
         'email': email,
-        'friends': {'incoming': [], 'outgoing': [], 'current': []}, //no friends
+        'friends': {'incoming': [], 'outgoing': [], 'current': []},
         'events': []
-      };
+      });
 
-      bool usernameExists = await isUsernameTaken(username);
-
-      //if username doesnt exist
-      if (!usernameExists) {
-        //make the fire auth user in the authentication database
-        final userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        //user that is returned with their UID
-        final userID = userCredential.user?.uid;
-
-        //check to see if the authenticaiton worked and they had a unique email
-        if (userID != null) {
-          //add the user to the firestore database
-          await _firestore.collection('users').doc(userID).set(userinfo);
-
-          //everything worked correctly so lets go to the homepage
-          await Future.delayed(const Duration(seconds: 1));
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => const Home()));
-        }
-        //if something goes wrong throw all these errors
-      } else {
-        String message = 'Username is already in use. Please try again.';
-        Fluttertoast.showToast(
-          msg: message,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.SNACKBAR,
-          backgroundColor: Colors.black54,
-          textColor: Colors.white,
-          fontSize: 14.0,
-        );
-      }
+      return userCredential;
     } on FirebaseAuthException catch (e) {
-      String message = '';
-      if (e.code == 'weak-password') {
-        message = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        message = 'An account already exists with that email.';
-      }
-      Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 14.0,
-      );
+      // Handle specific Firebase exceptions if needed
+      throw Exception('Error during signup: ${e.message}');
     } catch (e) {
-      // Handle other errors
-      Fluttertoast.showToast(
-        msg: "An error occurred. Please try again.",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 14.0,
-      );
+      // Handle any other errors
+      throw Exception('Unexpected error: $e');
     }
   }
 
-  //sign in method thing that gets the fields needed to signin
-  Future<void> signin(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
+  Future<UserCredential> signin({
+    required String email,
+    required String password,
+  }) async {
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-
-      await Future.delayed(const Duration(seconds: 1));
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => const Home()));
-    } on FirebaseAuthException catch (e) {
-      String message = '';
-      if (e.code == 'invalid-email') {
-        message = 'No user found for that email.';
-      } else if (e.code == 'invalid-credential') {
-        message = 'Wrong password provided for that user.';
-      }
-      Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 14.0,
+      // Attempt to sign in the user
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      // Handle specific errors
+      if (e.code == 'user-not-found') {
+        throw Exception('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        throw Exception('Wrong password provided.');
+      } else {
+        throw Exception('Failed to sign in: ${e.message}');
+      }
+    } catch (e) {
+      // Handle any other errors
+      throw Exception('Unexpected error: $e');
     }
-  }
-
-  //simple signout
-  Future<void> signout({required BuildContext context}) async {
-    await FirebaseAuth.instance.signOut();
-    await Future.delayed(const Duration(seconds: 1));
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (BuildContext context) => Login()));
   }
 }

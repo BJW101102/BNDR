@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/controllers/auth_service.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatelessWidget {
@@ -46,20 +46,20 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _logout(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff0D6EFD),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-        minimumSize: const Size(double.infinity, 60),
-        elevation: 0,
-      ),
-      onPressed: () async {
-        await AuthService().signout(context: context);
-      },
-      child: const Text("Sign Out"),
-    );
-  }
+  // Widget _logout(BuildContext context) {
+  //   return ElevatedButton(
+  //     style: ElevatedButton.styleFrom(
+  //       backgroundColor: const Color(0xff0D6EFD),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(14),
+  //       ),
+  //       minimumSize: const Size(double.infinity, 60),
+  //       elevation: 0,
+  //     ),
+  //     onPressed: () async {
+  //       await AuthService().signout(context: context);
+  //     },
+  //     child: const Text("Sign Out"),
+  //   );
+  // }
 }
