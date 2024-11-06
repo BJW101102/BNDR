@@ -5,7 +5,7 @@ class AuthService {
   final _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-//the signup fields that a user fills out with their info
+  ///Registers a new user in FireBase
   Future<UserCredential> signup({
     required String email,
     required String password,
@@ -44,6 +44,7 @@ class AuthService {
     }
   }
 
+  ///Logins a user
   Future<UserCredential> signin({
     required String email,
     required String password,

@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FriendService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  ///Sends a friend request to a user and returns a boolean for the transaction.
   Future<bool> sendFriendRequest({
     required String userID,
     required String friendName,
   }) async {
+    bool success = false;
     try {
       // Fetching Friend
       QuerySnapshot friendSnapshot = await _db
@@ -43,22 +45,22 @@ class FriendService {
             'friends.incoming': FieldValue.arrayUnion([userID]),
           });
         });
-        return true;
+        success = true;
       }
     } on FirebaseAuthException catch (e) {
-      // Handle specific Firebase exceptions
       throw Exception('Error during friend request: ${e.message}');
     } catch (e) {
-      // Handle any other errors
       throw Exception('Unexpected error: $e');
     }
-    return false;
+    return success;
   }
 
+  ///Handles a friend request (accept or decline), returns bool for transaction.
   Future<bool> handleFriendRequest(
       {required String userID,
       required String friendID,
       required bool accept}) async {
+    bool success = false;
     try {
       await _db.runTransaction((transaction) async {
         // Get the user document and friend document
@@ -73,7 +75,7 @@ class FriendService {
           throw Exception('User or Friend not found');
         }
 
-        // Accepting or Declining friend request
+        // Updating both parties current friends
         if (accept) {
           transaction.update(userRef, {
             'friends.current': FieldValue.arrayUnion([friendID]),
@@ -84,25 +86,26 @@ class FriendService {
           });
         }
 
-        // Removing from friend from user's incoming array
+        // Removing friend from user's incoming array
         transaction.update(userRef, {
           'friends.incoming': FieldValue.arrayRemove([friendID]),
         });
 
-        // Removing from user from friend's outgoing array
+        // Removing user from friend's outgoing array
         transaction.update(friendRef, {
           'friends.outgoing': FieldValue.arrayRemove([userID]),
         });
-        return true;
+        success = true;
       });
     } on FirebaseException catch (e) {
       throw Exception('Error during handling friend request: ${e.message}');
     } catch (e) {
       throw Exception('Unexpected error: $e');
     }
-    return false;
+    return success;
   }
 
+  ///Returns a Map of the desired friends, (current, incoming, outgoing)
   Future<List<Map<String, String>>> getFriendTypes(
       {required String userID, required String friendType}) async {
     try {
