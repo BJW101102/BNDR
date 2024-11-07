@@ -250,6 +250,8 @@ class _PlannerState extends State<Planner> {
                                 onPressed: () {
                                   placeSelection(
                                       listOfLocations[index]["place_id"], true);
+                                      //STORE PLACE_ID
+
                                 },
                               ),
                             ],
@@ -348,6 +350,7 @@ class _PlannerState extends State<Planner> {
                           onPressed: () {
                             setState(() {
                               selectedLocations.removeAt(index);
+                              //REMOVE PLACE_ID
                             });
                           },
                         ),
