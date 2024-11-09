@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart'; // Import your AuthService
-import '../test_ui/test_friends.dart';
+import '../test_ui/test_friends.dart'; // Import the Friends page
+import '../test_ui/test_event.dart'; // Import the EventTestPage
 
 class AuthTestScreen extends StatefulWidget {
   @override
@@ -16,6 +17,13 @@ class _AuthTestScreenState extends State<AuthTestScreen> {
   final AuthService authService = AuthService();
 
   bool isSignupMode = true; // Track if the user is in signup or login mode
+  int _selectedIndex = 0; // Navigation index for switching between pages
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   // Method for handling sign up
   void _signup() async {
@@ -53,10 +61,11 @@ class _AuthTestScreenState extends State<AuthTestScreen> {
         content: Text('Login successful! UID: ${userCredential.user!.uid}'),
       ));
 
+      // Navigate to the EventTestPage and pass the UID
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => FriendsPage(userID: userCredential.user!.uid),
+          builder: (context) => EventTestPage(userID: userCredential.user!.uid),
         ),
       );
     } catch (e) {
@@ -121,6 +130,29 @@ class _AuthTestScreenState extends State<AuthTestScreen> {
               child: Text(isSignupMode
                   ? 'Already have an account? Login'
                   : 'Don\'t have an account? Sign up'),
+            ),
+            SizedBox(height: 20),
+            // Navigation bar for event or friends
+            BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Friends',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.event),
+                  label: 'Events',
+                ),
+              ],
+            ),
+            // Switch between pages based on selected index
+            Expanded(
+              child: _selectedIndex == 0
+                  ? FriendsPage(userID: 'testUserID') // Use actual user ID here
+                  : EventTestPage(
+                      userID: 'testUserID'), // Pass the user ID here
             ),
           ],
         ),

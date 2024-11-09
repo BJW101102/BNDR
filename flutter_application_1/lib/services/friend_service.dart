@@ -132,7 +132,6 @@ class FriendService {
                 {'id': friendID, 'name': friendDoc['username'] ?? 'noName'});
           }
         }
-
         return friendInfos;
       } else {
         throw Exception('User not found');
