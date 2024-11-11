@@ -89,8 +89,9 @@ class EventService {
 
         // Removing the eventID from the user's request list
         transaction.update(userRef, {
-          'events.accepted': FieldValue.arrayRemove([eventID]),
+          'events.requested': FieldValue.arrayRemove([eventID]),
         });
+        success = true;
       });
     } on FirebaseException catch (e) {
       throw Exception('Error during handling friend request: ${e.message}');
@@ -149,38 +150,46 @@ class EventService {
 
   /// Returns all the user's events.
   Future<List<Map<String, dynamic>>> getAllUserEvents(
-      {required String userID}) async {
+      {required String userID, required String eventType}) async {
     List<Map<String, dynamic>> events = [];
+
+    if (eventType != 'accepted' && eventType != 'requested') {
+      throw Exception('Invalid event type');
+    }
     try {
       DocumentSnapshot userDoc =
           await _db.collection('users').doc(userID).get();
 
       if (userDoc.exists) {
-        // Safely cast or convert the field to a List<String>
-        List<dynamic> eventIDsDynamic = userDoc['events']['accepted'];
-        List<String> eventIDs =
-            eventIDsDynamic.map((e) => e.toString()).toList();
+        // Safely check if 'events' is null or doesn't contain the eventType
+        var eventsData = userDoc['events'];
+        if (eventsData != null && eventsData[eventType] != null) {
+          List<dynamic> eventIDsDynamic = eventsData[eventType];
 
-        for (String eventID in eventIDs) {
-          DocumentSnapshot eventDoc =
-              await _db.collection('events').doc(eventID).get();
+          List<String> eventIDs =
+              eventIDsDynamic.map((e) => e.toString()).toList();
 
-          if (eventDoc.exists) {
-            events.add({
-              'id': eventDoc.id,
-              'eventName': eventDoc['eventName'] ?? '',
-              'locations': List<String>.from(eventDoc['locations'] ?? []),
-              'participants': {
-                'accepted': List<String>.from(
-                    eventDoc['participants']['accepted'] ?? []),
-                'declined': List<String>.from(
-                    eventDoc['participants']['declined'] ?? []),
-                'requested': List<String>.from(
-                    eventDoc['participants']['requested'] ?? []),
-              },
-              'time': eventDoc['time'] ?? '',
-              'date': eventDoc['date'] ?? '',
-            });
+          for (String eventID in eventIDs) {
+            DocumentSnapshot eventDoc =
+                await _db.collection('events').doc(eventID).get();
+
+            if (eventDoc.exists) {
+              events.add({
+                'id': eventDoc.id,
+                'eventName': eventDoc['eventName'] ?? '',
+                'locations': List<String>.from(eventDoc['locations'] ?? []),
+                'participants': {
+                  'accepted': List<String>.from(
+                      eventDoc['participants']['accepted'] ?? []),
+                  'declined': List<String>.from(
+                      eventDoc['participants']['declined'] ?? []),
+                  'requested': List<String>.from(
+                      eventDoc['participants']['requested'] ?? []),
+                },
+                'time': eventDoc['time'] ?? '',
+                'date': eventDoc['date'] ?? '',
+              });
+            }
           }
         }
       }
