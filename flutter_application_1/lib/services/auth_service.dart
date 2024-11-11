@@ -31,7 +31,7 @@ class AuthService {
         'username': username,
         'email': email,
         'friends': {'incoming': [], 'outgoing': [], 'current': []},
-        'events': []
+        'events': {'requested': [], 'accepted': [], 'previous': []}
       });
 
       return userCredential;

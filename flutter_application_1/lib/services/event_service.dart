@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class EventService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  /// Creates an Event and stores within Firebase under, the 'events' collection.
   Future<bool> createEvent(
       {required String userID,
       required String eventName,
@@ -43,7 +45,7 @@ class EventService {
 
         // Adding event to the user
         transaction.update(userRef, {
-          'events': FieldValue.arrayUnion([eventID]),
+          'events.accepted': FieldValue.arrayUnion([eventID]),
         });
       });
     } on FirebaseException catch (e) {
@@ -54,6 +56,98 @@ class EventService {
     return success;
   }
 
+  /// Handles an event request for a user. The user can either accept or decline the request. If accepted, the
+  /// 'eventID' is stored within the events.accepted list, otherwise, the eventID is ignored.
+  Future<bool> handleEventRequest(
+      {required String userID,
+      required String eventID,
+      required bool accept}) async {
+    bool success = false;
+    try {
+      await _db.runTransaction((transaction) async {
+        DocumentReference userRef = _db.collection('users').doc(userID);
+        DocumentReference eventRef = _db.collection('events').doc(eventID);
+
+        DocumentSnapshot userSnapshot = await transaction.get(userRef);
+        DocumentSnapshot eventSnapshot = await transaction.get(eventRef);
+
+        if (!userSnapshot.exists || !eventSnapshot.exists) {
+          throw Exception('User or Event not found');
+        }
+
+        if (accept) {
+          // Updating the Event's accepted list
+          transaction.update(eventRef, {
+            'participants.accepted': FieldValue.arrayUnion([userID]),
+          });
+
+          // Updating the User's events.accepted list
+          transaction.update(userRef, {
+            'events.accepted': FieldValue.arrayUnion([eventID]),
+          });
+        }
+
+        // Removing the eventID from the user's request list
+        transaction.update(userRef, {
+          'events.accepted': FieldValue.arrayRemove([eventID]),
+        });
+      });
+    } on FirebaseException catch (e) {
+      throw Exception('Error during handling friend request: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
+    return success;
+  }
+
+  /// Sends an event request to the friends events.requested list.
+  Future<bool> sendEventRequest(
+      {required String friendName, required String eventID}) async {
+    bool success = false;
+    try {
+      // Fetching Friend
+      QuerySnapshot friendSnapshot = await _db
+          .collection('users')
+          .where('username', isEqualTo: friendName)
+          .get();
+
+      if (friendSnapshot.docs.isNotEmpty) {
+        DocumentSnapshot friend = friendSnapshot.docs.first;
+        String friendID = friend['userID'];
+
+        // Firestore transaction to update both users' friend lists atomically
+        await _db.runTransaction((transaction) async {
+          DocumentReference friendRef = _db.collection('users').doc(friendID);
+          DocumentReference eventRef = _db.collection('events').doc(eventID);
+
+          DocumentSnapshot friendSnapshot = await transaction.get(friendRef);
+          DocumentSnapshot eventSnapshot = await transaction.get(eventRef);
+
+          if (!friendSnapshot.exists || !eventSnapshot.exists) {
+            throw Exception('User or Friend not found');
+          }
+
+          // Updating Event's request with friend
+          transaction.update(eventRef, {
+            'participants.requested': FieldValue.arrayUnion([friendID]),
+          });
+
+          //Updating Friend's incoming request
+          transaction.update(friendRef, {
+            'events.requested': FieldValue.arrayUnion([eventID]),
+          });
+        });
+        success = true;
+      }
+    } on FirebaseException catch (e) {
+      throw Exception('Error during friend request: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
+    return success;
+  }
+
+  /// Returns all the user's events.
   Future<List<Map<String, dynamic>>> getAllUserEvents(
       {required String userID}) async {
     List<Map<String, dynamic>> events = [];
@@ -63,7 +157,7 @@ class EventService {
 
       if (userDoc.exists) {
         // Safely cast or convert the field to a List<String>
-        List<dynamic> eventIDsDynamic = userDoc['events'];
+        List<dynamic> eventIDsDynamic = userDoc['events']['accepted'];
         List<String> eventIDs =
             eventIDsDynamic.map((e) => e.toString()).toList();
 
