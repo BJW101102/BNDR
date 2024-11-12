@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
 import 'package:firebase_auth/firebase_auth.dart'; // Firebase Auth
+import '../components/bottom_navbar.dart'; // Import the reusable bottom navbar widget
 
 class EventPage extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class _EventPageState extends State<EventPage> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  int _selectedIndex = 0; // Add an index for the bottom navigation bar
 
   // Function to pick the event date
   Future<void> _selectDate(BuildContext context) async {
@@ -69,7 +71,7 @@ class _EventPageState extends State<EventPage> {
           await userDoc.collection('eventsList').doc(_eventName).set({
             'eventDate': _formatDate(),
             'eventTime': _formatTime(),
-            'places' : []
+            'places': []
           });
 
           // Show success message
@@ -84,6 +86,13 @@ class _EventPageState extends State<EventPage> {
         }
       }
     }
+  }
+
+  // Function to handle item tap for bottom navigation
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -154,6 +163,10 @@ class _EventPageState extends State<EventPage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
