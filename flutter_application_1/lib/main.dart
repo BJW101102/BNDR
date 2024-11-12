@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
+import 'pages/planning/metaevent.dart';
 import 'pages/event_setup.dart';
 import 'test_views/home_page.dart'; // Home page after login/signup
 import 'firebase_options.dart'; // Required for Firebase initialization
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Login(), // Login page route
         '/signup': (context) => Signup(), // Signup page route
-        '/home': (context) => HomePage(), // Home page after login/signup
+        '/home': (context) => EventPage(), // Home page after login/signup
       },
     );
   }

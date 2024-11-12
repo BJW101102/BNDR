@@ -16,11 +16,11 @@ class CustomBottomNavBar extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.event),
-          label: 'Events',
+          label: 'Events (Manage)',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
-          label: 'Planner',
+          label: 'Planner (Create)',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
