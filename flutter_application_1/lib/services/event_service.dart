@@ -91,6 +91,11 @@ class EventService {
         transaction.update(userRef, {
           'events.requested': FieldValue.arrayRemove([eventID]),
         });
+
+        // Removing the freindID from the requested participants
+        transaction.update(eventRef, {
+          'participants.requested': FieldValue.arrayRemove([eventID]),
+        });
         success = true;
       });
     } on FirebaseException catch (e) {

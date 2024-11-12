@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatelessWidget {
@@ -38,7 +37,7 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              _logout(context)
+              // _logout(context)
             ],
           ),
         ),
