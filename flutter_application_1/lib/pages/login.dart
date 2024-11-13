@@ -70,11 +70,6 @@ class Login extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Container(
-            margin: const EdgeInsets.only(left: 10),
-            padding: const EdgeInsets.all(10),
-            child: const Icon(Icons.arrow_back, color: Colors.black),
-          ),
         ),
       ),
       body: SafeArea(

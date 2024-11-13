@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/event_setup.dart';
+import 'package:flutter_application_1/pages/planner.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
-import 'pages/event_setup.dart';
 import 'test_views/home_page.dart'; // Home page after login/signup
 import 'firebase_options.dart'; // Required for Firebase initialization
 
@@ -29,8 +30,61 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Login(), // Login page route
         '/signup': (context) => Signup(), // Signup page route
-        '/home': (context) => HomePage(), // Home page after login/signup
+        '/home': (context) => EventPage(), // Home page after login/signup
       },
+    );
+  }
+}
+
+class Mainscreen extends StatefulWidget {
+  const Mainscreen({Key? key}) : super(key: key); // Add const constructor
+
+  @override
+  _MainscreenState createState() => _MainscreenState();
+}
+
+class _MainscreenState extends State<Mainscreen> {
+  int _selectedIndex = 0;
+
+  // these are where pages for the navigation bar are stored. 
+  final List<Widget> _pages = <Widget>[
+    EventPage(),
+    Planner(),
+    HomePage(),
+  ];
+
+  // method so that _selectedIndex can be changed to switch between pages
+  void onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: _pages.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Event',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Planner',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: onItemTapped,
+      ),
     );
   }
 }

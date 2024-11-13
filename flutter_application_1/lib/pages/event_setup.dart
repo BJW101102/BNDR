@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/test_views/home_page.dart';
 import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase Auth
-import '../components/bottom_navbar.dart'; // Import the reusable bottom navbar widget
+import 'planner.dart'; // Import the Planner page
 
 class EventPage extends StatefulWidget {
   @override
@@ -16,6 +16,7 @@ class _EventPageState extends State<EventPage> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int _selectedIndex = 0; // Add an index for the bottom navigation bar
+
 
   // Function to pick the event date
   Future<void> _selectDate(BuildContext context) async {
@@ -45,55 +46,52 @@ class _EventPageState extends State<EventPage> {
     }
   }
 
-  // Function to format the date and time display
-  String _formatDate() {
-    return DateFormat('yyyy-MM-dd').format(_selectedDate);
+  // Function to handle navigation
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index; // Update the selected index
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => _pages[index]),
+    );
   }
 
+  // Function to handle event submission
+  void _saveEvent() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      // Save event to Firestore
+      _firestore.collection('events').add({
+        'name': _eventName,
+        'date': _selectedDate,
+        'time': _selectedTime.format(context),
+      });
+
+      // Navigate to Planner page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Planner()),
+      );
+    }
+  }
+
+  // Function to format the selected date
+  String _formatDate() {
+    return DateFormat.yMMMd().format(_selectedDate);
+  }
+
+  // Function to format the selected time
   String _formatTime() {
     return _selectedTime.format(context);
   }
 
-  // Function to save the event details into Firestore
-  Future<void> _saveEvent() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // Get current user's UID
-      String? userId = FirebaseAuth.instance.currentUser?.uid;
-
-      if (userId != null) {
-        try {
-          // Reference to user's document in Firestore
-          DocumentReference userDoc =
-              _firestore.collection('users').doc(userId);
-
-          // Add the event to the subcollection 'eventsList'
-          await userDoc.collection('eventsList').doc(_eventName).set({
-            'eventDate': _formatDate(),
-            'eventTime': _formatTime(),
-            'places': []
-          });
-
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Event "$_eventName" saved successfully.')),
-          );
-        } catch (e) {
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to save event. Please try again.')),
-          );
-        }
-      }
-    }
-  }
-
-  // Function to handle item tap for bottom navigation
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  // these are where pages for the navigation bar are stored. 
+  final List<Widget> _pages = <Widget>[
+    EventPage(),
+    Planner()
+    //HomePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +151,6 @@ class _EventPageState extends State<EventPage> {
                 ],
               ),
               SizedBox(height: 40),
-              // Save Button
               Center(
                 child: ElevatedButton(
                   onPressed: _saveEvent,
@@ -164,9 +161,24 @@ class _EventPageState extends State<EventPage> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Events',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Planner',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.more),
+            label: 'More',
+          ),
+        ],
+        currentIndex: _selectedIndex, // Pass the selected index
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped, // Pass the onItemTapped function
       ),
     );
   }
