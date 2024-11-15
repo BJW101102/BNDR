@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/bottom_navbar.dart';
 import 'package:flutter_application_1/pages/event_setup.dart';
 import 'package:flutter_application_1/pages/planner.dart';
 import 'pages/login.dart';
@@ -63,28 +64,10 @@ class _MainscreenState extends State<Mainscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body : Center(
         child: _pages.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Event',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Planner',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: onItemTapped,
-      ),
-    );
+      ), 
+      bottomNavigationBar: CustomBottomNavBar(selectedIndex: _selectedIndex, onItemTapped: onItemTapped),
+      );
   }
 }

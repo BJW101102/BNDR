@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/account.dart';
+import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/test_views/home_page.dart';
 import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
@@ -16,7 +18,24 @@ class _EventPageState extends State<EventPage> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int _selectedIndex = 0; // Add an index for the bottom navigation bar
+  String username = '';
+  String email = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    // Get the current user's username and email
+    // username = FirebaseAuth.instance.currentUser.displayName;
+    // email = FirebaseAuth.instance.currentUser.email;
+  }
+
+  // Function to load user data
+  Future<void> _loadUserData() async {
+    // Get the current user's username and email
+    // username = FirebaseAuth.instance.currentUser.displayName;
+    // email = FirebaseAuth.instance.currentUser.email;
+  }
 
   // Function to pick the event date
   Future<void> _selectDate(BuildContext context) async {
@@ -89,8 +108,8 @@ class _EventPageState extends State<EventPage> {
   // these are where pages for the navigation bar are stored. 
   final List<Widget> _pages = <Widget>[
     EventPage(),
-    Planner()
-    //HomePage(),
+    Home(),
+    //AccountPage(username: username, email: email),
   ];
 
   @override
@@ -161,6 +180,7 @@ class _EventPageState extends State<EventPage> {
           ),
         ),
       ),
+      // Navigation bar to switch between pages
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -168,12 +188,12 @@ class _EventPageState extends State<EventPage> {
             label: 'Events',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
+            icon: Icon(Icons.home),
             label: 'Planner',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.more),
-            label: 'More',
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
           ),
         ],
         currentIndex: _selectedIndex, // Pass the selected index
