@@ -109,7 +109,7 @@ class _EventPageState extends State<EventPage> {
   final List<Widget> _pages = <Widget>[
     EventPage(),
     Home(),
-    //AccountPage(username: username, email: email),
+    AccountPage(),
   ];
 
   @override
@@ -189,7 +189,7 @@ class _EventPageState extends State<EventPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Planner',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),

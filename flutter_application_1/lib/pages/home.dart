@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'event_setup.dart';
+import 'account.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -16,7 +17,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = <Widget>[
     EventPage(),
     Home(),
-    // AccountPage(),
+    AccountPage(),
   ];
 
   void _onItemTapped(int index) {
