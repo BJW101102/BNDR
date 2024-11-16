@@ -45,12 +45,12 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Hello👋',
+                'BNDR',
                 style: GoogleFonts.raleway(
                     textStyle: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20)),
+                        fontSize: 40)),
               ),
               const SizedBox(
                 height: 10,

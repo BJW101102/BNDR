@@ -3,7 +3,7 @@ import 'home.dart';
 import 'event_setup.dart';
 import 'account.dart';
 import 'friends.dart';
-import 'event_dashboard.dart';
+import 'package:flutter_application_1/services/event_service.dart';
 
 class EventDashboard extends StatefulWidget {
   const EventDashboard({Key? key}) : super(key: key);
