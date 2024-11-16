@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'event_setup.dart';
 import 'account.dart';
+import 'friends.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,8 +16,9 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
-    EventPage(),
     Home(),
+    EventPage(),
+    FriendsPage(),
     AccountPage(),
   ];
 
@@ -70,12 +72,16 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Event',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add Event',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Friends',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
@@ -84,6 +90,7 @@ class _HomeState extends State<Home> {
         ],
         currentIndex: _selectedIndex, // Pass the selected index
         selectedItemColor: Colors.amber[800],
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped, // Pass the onItemTapped function
       ),
     );

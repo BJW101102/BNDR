@@ -5,6 +5,7 @@ import 'package:flutter_application_1/test_views/home_page.dart';
 import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
 import 'planner.dart'; // Import the Planner page
+import 'friends.dart'; // Import the Friends page
 
 class EventPage extends StatefulWidget {
   @override
@@ -107,8 +108,9 @@ class _EventPageState extends State<EventPage> {
 
   // these are where pages for the navigation bar are stored. 
   final List<Widget> _pages = <Widget>[
-    EventPage(),
     Home(),
+    EventPage(),
+    FriendsPage(),
     AccountPage(),
   ];
 
@@ -184,12 +186,19 @@ class _EventPageState extends State<EventPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Colors.blue,
+            //radius:20,
+            icon: Icon(Icons.add),
+            //color: Colors.white,
+            label: 'Add Event',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Friends',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
@@ -198,6 +207,7 @@ class _EventPageState extends State<EventPage> {
         ],
         currentIndex: _selectedIndex, // Pass the selected index
         selectedItemColor: Colors.amber[800],
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped, // Pass the onItemTapped function
       ),
     );
