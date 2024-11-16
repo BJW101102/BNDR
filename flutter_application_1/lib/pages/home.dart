@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'event_setup.dart';
 import 'account.dart';
 import 'friends.dart';
+import 'event_dashboard.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -17,6 +18,7 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _pages = <Widget>[
     Home(),
+    EventDashboard(),
     EventPage(),
     FriendsPage(),
     AccountPage(),
@@ -76,8 +78,12 @@ class _HomeState extends State<Home> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Events',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: 'Add Event',
+            label: 'Planner',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
@@ -88,7 +94,7 @@ class _HomeState extends State<Home> {
             label: 'Account',
           ),
         ],
-        currentIndex: _selectedIndex, // Pass the selected index
+        currentIndex: 0, // Pass the selected index
         selectedItemColor: Colors.amber[800],
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped, // Pass the onItemTapped function

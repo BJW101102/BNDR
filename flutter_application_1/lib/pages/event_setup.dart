@@ -6,6 +6,7 @@ import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
 import 'planner.dart'; // Import the Planner page
 import 'friends.dart'; // Import the Friends page
+import 'event_dashboard.dart'; // Import the EventDashboard page
 
 class EventPage extends StatefulWidget {
   @override
@@ -109,6 +110,7 @@ class _EventPageState extends State<EventPage> {
   // these are where pages for the navigation bar are stored. 
   final List<Widget> _pages = <Widget>[
     Home(),
+    EventDashboard(),
     EventPage(),
     FriendsPage(),
     AccountPage(),
@@ -190,11 +192,13 @@ class _EventPageState extends State<EventPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            //radius:20,
+            icon: Icon(Icons.calendar_today),
+            label: 'Events',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.add),
             //color: Colors.white,
-            label: 'Add Event',
+            label: 'Planner',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
@@ -205,7 +209,7 @@ class _EventPageState extends State<EventPage> {
             label: 'Account',
           ),
         ],
-        currentIndex: _selectedIndex, // Pass the selected index
+        currentIndex: 2, // Pass the selected index
         selectedItemColor: Colors.amber[800],
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped, // Pass the onItemTapped function
