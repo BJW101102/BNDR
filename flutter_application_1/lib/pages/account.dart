@@ -20,7 +20,7 @@ class _AccountState extends State<AccountPage> {
     Home(),
     EventDashboard(),
     EventPage(),
-    FriendsPage(),
+    FriendPage(),
     AccountPage(),
   ];
 

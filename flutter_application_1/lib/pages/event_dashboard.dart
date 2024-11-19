@@ -19,7 +19,7 @@ class _EventDashboardState extends State<EventDashboard> {
     Home(),
     EventDashboard(),
     EventPage(),
-    FriendsPage(),
+    FriendPage(),
     AccountPage(),
   ];
 

@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
     Home(),
     EventDashboard(),
     EventPage(),
-    FriendsPage(),
+    FriendPage(),
     AccountPage(),
   ];
 
