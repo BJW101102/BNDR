@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'event_setup.dart';
-import 'account.dart';
-import 'friends.dart';
-import 'package:flutter_application_1/services/event_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/services/event_service.dart'; // Import the EventService
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'package:flutter_application_1/pages/event_setup.dart'; // Import the EventPage
+import 'package:flutter_application_1/pages/friends.dart'; // Import the FriendsPage
+import 'package:flutter_application_1/pages/account.dart'; // Import the AccountPage
+import 'package:flutter_application_1/pages/home.dart'; // Import the HomePage
 
 class EventDashboard extends StatefulWidget {
   const EventDashboard({Key? key}) : super(key: key);
@@ -13,11 +15,11 @@ class EventDashboard extends StatefulWidget {
 }
 
 class _EventDashboardState extends State<EventDashboard> {
+  final EventService _eventService = EventService();
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
     Home(),
-    EventDashboard(),
     EventPage(),
     FriendPage(),
     AccountPage(),
@@ -25,47 +27,53 @@ class _EventDashboardState extends State<EventDashboard> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = 0;
     });
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => _pages[index]),
     );
   }
-@override 
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Event Dashboard'),
-    ),
-    body: ListView(
-      children: <Widget>[
-        ListTile(
-          leading: Icon(Icons.event),
-          title: Text('Event 1'),
-          subtitle: Text('Online'),
-        ),
-        ListTile(
-          leading: Icon(Icons.event),
-          title: Text('Event 2'),
-          subtitle: Text('Offline'),
-        ),
-        ListTile(
-          leading: Icon(Icons.event),
-          title: Text('Event 3'),
-          subtitle: Text('Online'),
-        ),
-      ],
-    ),
-    bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Event Dashboard'),
+      ),
+      body: StreamBuilder<List<dynamic>>(
+        stream: Stream.fromFuture(_eventService.getAllUserEvents(userID: FirebaseAuth.instance.currentUser!.uid, eventType: 'accepted')),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final events = snapshot.data ?? [];
+          return ListView.builder(
+            itemCount: events.length,
+            itemBuilder: (context, index) {
+              final event = events[index];
+              return ListTile(
+                leading: Icon(Icons.event),
+                title: Text(event.name),
+                subtitle: Text('${event.date.toLocal()} at ${event.time}'),
+              );
+            },
+          );
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            label: 'Events',
+            label: 'Event',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
@@ -80,11 +88,11 @@ Widget build(BuildContext context) {
             label: 'Account',
           ),
         ],
-        currentIndex: 1, // Pass the selected index
+        currentIndex: 1,
         selectedItemColor: Colors.amber[800],
         unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped, // Pass the onItemTapped function
+        onTap: _onItemTapped,
       ),
-  );
-}
+    );
+  }
 }
