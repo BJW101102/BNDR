@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'event_dashboard.dart';
 import 'event_setup.dart';
-import 'account.dart';
 import 'friends.dart';
 import 'home.dart';
 

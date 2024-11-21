@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/account.dart';
 import 'package:flutter_application_1/pages/home.dart';
-import 'package:flutter_application_1/test_views/home_page.dart';
 import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
 import 'planner.dart'; // Import the Planner page
@@ -90,7 +89,7 @@ class _EventPageState extends State<EventPage> {
       });
 
       // Navigate to Planner page
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Planner()),
       );

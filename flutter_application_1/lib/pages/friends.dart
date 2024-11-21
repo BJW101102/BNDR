@@ -4,7 +4,6 @@ import '../services/friend_service.dart';
 import 'event_dashboard.dart';
 import 'event_setup.dart';
 import 'account.dart';
-import 'friends.dart';
 import 'home.dart';
 
 class FriendPage extends StatefulWidget {

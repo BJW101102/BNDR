@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/review.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_places_flutter/google_places_flutter.dart';
-import 'package:google_places_flutter/model/place_type.dart';
-import 'package:google_places_flutter/model/prediction.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
 class Planner extends StatefulWidget {
-  const Planner({super.key});
+  const Planner({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<Planner> createState() => _PlannerState();
@@ -183,10 +183,33 @@ class _PlannerState extends State<Planner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Planner"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous page
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check_circle),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ReviewPage(
+                          selectedLocations: selectedLocations,
+                        )),
+              ); // Navigate to the review page
+            },
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of((context)).size.height,
             width: MediaQuery.of(context).size.width,
             child: GoogleMap(
               myLocationButtonEnabled: false,
@@ -195,7 +218,7 @@ class _PlannerState extends State<Planner> {
                 googleMapController = controller;
               },
               initialCameraPosition: CameraPosition(
-                target: myCurrentLocation!,
+                target: myCurrentLocation,
                 zoom: 14,
               ),
             ),
@@ -206,13 +229,13 @@ class _PlannerState extends State<Planner> {
             right: 0,
             child: Container(
               color: Colors.white,
-              padding: EdgeInsets.only(top: 60, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
               child: Column(
                 children: [
                   TextField(
                     autocorrect: false,
                     controller: searchController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: "Search Places...",
                         filled: true,
                         fillColor: Colors.white),
@@ -245,12 +268,11 @@ class _PlannerState extends State<Planner> {
                                 ),
                               ),
                               IconButton(
-                                icon: Icon(Icons.add),
+                                icon: const Icon(Icons.add),
                                 onPressed: () {
                                   placeSelection(
                                       listOfLocations[index]["place_id"], true);
-                                      //STORE PLACE_ID
-
+                                  // STORE PLACE_ID
                                 },
                               ),
                             ],
@@ -267,17 +289,18 @@ class _PlannerState extends State<Planner> {
             bottom: 0,
             left: 0,
             right: 0,
-            //bottom half of the screen
+            // Bottom half of the screen
             child: Container(
               color: Colors.grey[200],
               height: MediaQuery.of(context).size.height / 3,
               child: ListView.builder(
                 itemCount: selectedLocations.length,
                 itemBuilder: (context, index) {
-                  //each entry gets its own container to store information
+                  // Each entry gets its own container to store information
                   return Container(
-                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    padding: EdgeInsets.all(12),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -287,7 +310,7 @@ class _PlannerState extends State<Planner> {
                           color: Colors.grey.withOpacity(0.2),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -298,22 +321,23 @@ class _PlannerState extends State<Planner> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              //display name of location
+                              // Display name of location
                               Text(
                                 "Location: " +
                                     selectedLocations[index]["result"]["name"],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 4),
-                              //display address
+                              const SizedBox(height: 4),
+                              // Display address
                               Text(
                                 "Address: " +
                                     (selectedLocations[index]["result"]
                                         ["formatted_address"]),
                                 style: TextStyle(color: Colors.grey[600]),
                               ),
-                              SizedBox(height: 4),
-                              //display rating
+                              const SizedBox(height: 4),
+                              // Display rating
                               Text(
                                 "Rating: " +
                                     (selectedLocations[index]["result"]
@@ -322,11 +346,11 @@ class _PlannerState extends State<Planner> {
                                         "No Rating"),
                                 style: TextStyle(color: Colors.grey[800]),
                               ),
-                              //display extra info if it exists
+                              // Display extra info if it exists
                               if (selectedLocations[index]
                                   .containsKey('extraInfo'))
                                 Padding(
-                                  padding: EdgeInsets.only(top: 4),
+                                  padding: const EdgeInsets.only(top: 4),
                                   child: Text(
                                     "Notes: " +
                                         selectedLocations[index]['extraInfo'],
@@ -336,20 +360,20 @@ class _PlannerState extends State<Planner> {
                             ],
                           ),
                         ),
-                        //edit button
+                        // Edit button
                         IconButton(
-                          icon: Icon(Icons.edit, color: Colors.black),
+                          icon: const Icon(Icons.edit, color: Colors.black),
                           onPressed: () {
                             _showEditDialog(index);
                           },
                         ),
-                        //remove button
+                        // Remove button
                         IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
                               selectedLocations.removeAt(index);
-                              //REMOVE PLACE_ID
+                              // REMOVE PLACE_ID
                             });
                           },
                         ),
@@ -362,32 +386,6 @@ class _PlannerState extends State<Planner> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Colors.white,
-      //   child: const Icon(
-      //     Icons.my_location,
-      //     size: 30,
-      //   ),
-      //   onPressed: () async {
-      //     Position position = await currentPosition();
-      //     googleMapController.animateCamera(
-      //       CameraUpdate.newCameraPosition(
-      //         CameraPosition(
-      //           target: LatLng(position.latitude, position.longitude),
-      //           zoom: 14,
-      //         ),
-      //       ),
-      //     );
-      //     markers.clear();
-      //     markers.add(
-      //       Marker(
-      //         markerId: const MarkerId('currentLocation'),
-      //         position: LatLng(position.latitude, position.longitude),
-      //       ),
-      //     );
-      //     setState(() {});
-      //   },
-      // ),
     );
   }
 }
