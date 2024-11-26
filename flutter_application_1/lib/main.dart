@@ -50,7 +50,7 @@ class _MainscreenState extends State<Mainscreen> {
   // these are where pages for the navigation bar are stored. 
   final List<Widget> _pages = <Widget>[
     EventPage(),
-    Planner(),
+    //Planner(),
     HomePage(),
   ];
 

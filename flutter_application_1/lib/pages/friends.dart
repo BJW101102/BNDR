@@ -42,10 +42,10 @@ class _FriendPageState extends State<FriendPage> {
   @override
   void initState() {
     super.initState();
-    _loadFriendData();
+    loadFriendData();
   }
 
-  void _loadFriendData() {
+  void loadFriendData() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       String userID = user.uid;
@@ -259,7 +259,7 @@ class _FriendPageState extends State<FriendPage> {
     );
     if (success) {
       setState(() {
-        _loadFriendData();
+        loadFriendData();
       });
     }
   }

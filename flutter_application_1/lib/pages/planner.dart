@@ -8,8 +8,14 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
 class Planner extends StatefulWidget {
+  final String eventName;
+  final DateTime selectedDate;
+  final TimeOfDay selectedTime;
   const Planner({
     Key? key,
+    required this.eventName,
+    required this.selectedDate,
+    required this.selectedTime,
   }) : super(key: key);
 
   @override
@@ -26,6 +32,7 @@ class _PlannerState extends State<Planner> {
   final String token = '1234567890';
   List<dynamic> selectedLocations = [];
   String userInput = "";
+  List<String> locationIDs = [];
 
   //calls function to get current location of user
   @override
@@ -83,6 +90,7 @@ class _PlannerState extends State<Planner> {
       if (response.statusCode == 200) {
         if (add == true) {
           selectedLocations.add(data);
+          locationIDs.add(input);
         }
         var locationCoordinates = data['result']['geometry']['location'];
         LatLng newLocation =
@@ -200,6 +208,10 @@ class _PlannerState extends State<Planner> {
                 MaterialPageRoute(
                     builder: (context) => ReviewPage(
                           selectedLocations: selectedLocations,
+                          eventName: widget.eventName,
+                          selectedDate: widget.selectedDate,
+                          selectedTime: widget.selectedTime,
+                          locationIDs: locationIDs,
                         )),
               ); // Navigate to the review page
             },

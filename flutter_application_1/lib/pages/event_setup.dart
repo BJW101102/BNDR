@@ -91,7 +91,11 @@ class _EventPageState extends State<EventPage> {
       // Navigate to Planner page
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Planner()),
+        MaterialPageRoute(builder: (context) => Planner(
+          eventName: _eventName,
+          selectedDate: _selectedDate,
+          selectedTime: _selectedTime,
+        )),
       );
     }
   }
