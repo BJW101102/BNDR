@@ -19,6 +19,7 @@ class _EventDashboardState extends State<EventDashboard> {
 
   final List<Widget> _pages = <Widget>[
     Home(),
+    EventDashboard(),
     EventPage(),
     FriendPage(),
     AccountPage(),
