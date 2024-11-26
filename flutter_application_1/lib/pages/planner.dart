@@ -59,7 +59,7 @@ class _PlannerState extends State<Planner> {
       var response = await http.get(Uri.parse(request));
       var data = json.decode(response.body);
       if (kDebugMode) {
-        print(data);
+        //print(data);
       }
       if (response.statusCode == 200) {
         setState(() {

@@ -5,13 +5,15 @@ class EventService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// Creates an Event and stores within Firebase under, the 'events' collection.
-  Future<bool> createEvent(
+  Future<Map<bool, String>> createEvent(
       {required String userID,
       required String eventName,
       required List<String> locationIDs,
       required String time,
       required String date}) async {
-    bool success = false;
+      Map<bool, String> success = {
+        false: ''
+      };
 
     try {
       await _db.runTransaction((transaction) async {
@@ -39,9 +41,11 @@ class EventService {
           throw Exception('User not found');
         }
 
-        success = true;
-
         String eventID = eventRef.id;
+
+        success = {
+          true: eventID        
+          };
 
         // Adding event to the user
         transaction.update(userRef, {

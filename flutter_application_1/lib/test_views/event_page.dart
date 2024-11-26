@@ -56,7 +56,7 @@ class _EventScreenState extends State<EventScreen> {
     }
 
     try {
-      bool success = await _eventService.createEvent(
+      Map<bool, String> success = await _eventService.createEvent(
         userID: widget.userID,
         eventName: eventName,
         locationIDs: locationIDs,
@@ -66,7 +66,7 @@ class _EventScreenState extends State<EventScreen> {
 
       setState(() {
         _eventCreationStatus =
-            success ? 'Event created successfully!' : 'Failed to create event.';
+            success.keys.first ? 'Event created successfully!' : 'Failed to create event.';
         _loadUserEvents();
       });
     } catch (e) {

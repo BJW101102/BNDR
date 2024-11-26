@@ -34,6 +34,7 @@ class ReviewPage extends StatelessWidget {
     List<String?> inviteList = [];
     final formattedDate = DateFormat.yMMMd().format(selectedDate);
     final formattedTime = selectedTime.format(context);
+    Map<bool, String> eventID = {false: ''};
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +65,8 @@ class ReviewPage extends StatelessWidget {
                         subtitle: Text(friend['id'] ?? ''),
                         trailing: ElevatedButton(
                           onPressed: () {
-                            inviteList.add(friend['id']);
+                            inviteList.add(friend['name']);//TODO change to ID later
+                            print("List: $inviteList");
                           },
                           child: Text(
                             inviteList.contains(friend['id'])
@@ -84,22 +86,26 @@ class ReviewPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 //create the event in the database
-                eventService.createEvent(
+                eventID = await eventService.createEvent(
                   userID: userID,
                   eventName: eventName,
                   locationIDs: locationIDs,
                   date: formattedDate,
                   time: formattedTime,
                 );
+                inviteList.forEach((name){
+                  eventService.sendEventRequest(friendName: name as String, eventID: eventID.values.first);
+                });
+                
               },
               style: ElevatedButton.styleFrom(
                 minimumSize:
                     Size(double.infinity, 60),
               ),
               child: Text(
-                'Send Invites',
+                'Start Your BNDR',
                 style: TextStyle(fontSize: 18),
               ),
             ),
