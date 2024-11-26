@@ -41,7 +41,7 @@ class _EventDashboardState extends State<EventDashboard> {
       appBar: AppBar(
         title: Text('Event Dashboard'),
       ),
-      body: StreamBuilder<List<dynamic>>(
+      body: StreamBuilder<List<Map<String,dynamic>>>(
         stream: Stream.fromFuture(_eventService.getAllUserEvents(userID: FirebaseAuth.instance.currentUser!.uid, eventType: 'accepted')),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -57,8 +57,8 @@ class _EventDashboardState extends State<EventDashboard> {
               final event = events[index];
               return ListTile(
                 leading: Icon(Icons.event),
-                title: Text(event.name),
-                subtitle: Text('${event.date.toLocal()} at ${event.time}'),
+                title: Text(event['eventName']),
+                subtitle: Text('${event['date']} at ${event['time']}'),
               );
             },
           );
