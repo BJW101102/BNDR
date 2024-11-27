@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/bottom_navbar.dart';
 import 'package:flutter_application_1/pages/event_setup.dart';
-import 'package:flutter_application_1/pages/planner.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
 import 'test_views/home_page.dart'; // Home page after login/signup

@@ -21,7 +21,13 @@ class AuthService {
         password: password,
       );
 
+      User? user = userCredential.user;
       String userID = userCredential.user!.uid;
+
+      // Update user profile with display name
+      await user!.updateDisplayName(username);
+      await user.reload();
+      user = _auth.currentUser;
 
       // Store additional user info in Firestore
       await _db.collection('users').doc(userID).set({

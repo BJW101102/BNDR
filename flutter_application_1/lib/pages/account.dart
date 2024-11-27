@@ -4,6 +4,7 @@ import 'event_dashboard.dart';
 import 'event_setup.dart';
 import 'friends.dart';
 import 'home.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -52,8 +53,7 @@ class _AccountState extends State<AccountPage> {
             ),
             SizedBox(height: 8),
             Text(
-              //FirebaseAuth.instance.currentUser!.displayName!,
-              user?.displayName ?? 'No username',
+              user?.uid ?? 'No username',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
