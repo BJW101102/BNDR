@@ -19,7 +19,7 @@ class _FriendPageState extends State<FriendPage> {
   final TextEditingController _friendUsernameController = TextEditingController();
   String _friendRequestStatus = '';
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 3;
 
   final List<Widget> _pages = <Widget>[
     Home(),
@@ -30,13 +30,12 @@ class _FriendPageState extends State<FriendPage> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => _pages[index]),
-    );
+    if (index != _selectedIndex) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => _pages[index]),
+      );
+    }
   }
 
   @override
@@ -92,10 +91,13 @@ class _FriendPageState extends State<FriendPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add a Friend'),
+        title: Text(
+          'Add a Friend',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: TextField(
           controller: _friendUsernameController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Enter friend\'s username',
             border: OutlineInputBorder(),
           ),
@@ -103,7 +105,7 @@ class _FriendPageState extends State<FriendPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text('Cancel', style: Theme.of(context).textTheme.bodyMedium),
           ),
           ElevatedButton(
             onPressed: () {
@@ -124,33 +126,38 @@ class _FriendPageState extends State<FriendPage> {
     if (user == null) {
       return Scaffold(
         body: Center(
-          child: Text('User not logged in. Please sign in first.'),
+          child: Text(
+            'User not logged in. Please sign in first.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
         ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Friends')),
+      appBar: AppBar(
+        title: const Text('Friends'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Incoming Friend Requests',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             _buildFriendCards(futureList: _incomingFriends, isIncoming: true),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Outgoing Friend Requests',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             _buildFriendCards(futureList: _outgoingFriends, isOutgoing: true),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Current Friends',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             _buildFriendCards(futureList: _currentFriends),
           ],
@@ -162,33 +169,36 @@ class _FriendPageState extends State<FriendPage> {
         tooltip: 'Add a Friend',
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Planner',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Friends',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: 3,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-      ),
+  items: const <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.calendar_today),
+      label: 'Events',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.add),
+      label: 'Planner',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.people),
+      label: 'Friends',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.account_circle),
+      label: 'Account',
+    ),
+  ],
+  currentIndex: _selectedIndex,
+  onTap: _onItemTapped,
+  // Use the theme colors for selected and unselected items
+  selectedItemColor: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+  unselectedItemColor: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+  backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+  type: BottomNavigationBarType.fixed, // Ensure icons and labels align
+),
     );
   }
 
@@ -201,11 +211,14 @@ class _FriendPageState extends State<FriendPage> {
       future: futureList,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Text('Error: ${snapshot.error}', style: Theme.of(context).textTheme.bodyMedium);
         } else if (snapshot.data!.isEmpty) {
-          return Text('No ${isIncoming ? 'incoming' : isOutgoing ? 'outgoing' : 'current'} friend requests.');
+          return Text(
+            'No ${isIncoming ? 'incoming' : isOutgoing ? 'outgoing' : 'current'} friend requests.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          );
         } else {
           return Column(
             children: snapshot.data!.map((friend) {
@@ -215,15 +228,21 @@ class _FriendPageState extends State<FriendPage> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
                   leading: CircleAvatar(
-                    child: Text(friend['name']![0].toUpperCase()),
+                    child: Text(
+                      friend['name']![0].toUpperCase(),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                    ),
                     backgroundColor: Colors.blueAccent,
                   ),
-                  title: Text(friend['name']!),
-                  subtitle: isIncoming
-                      ? const Text('Incoming request')
-                      : isOutgoing
-                          ? const Text('Outgoing request')
-                          : const Text('Friend'),
+                  title: Text(friend['name']!, style: Theme.of(context).textTheme.bodyLarge),
+                  subtitle: Text(
+                    isIncoming
+                        ? 'Incoming request'
+                        : isOutgoing
+                            ? 'Outgoing request'
+                            : 'Friend',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   trailing: isIncoming
                       ? Row(
                           mainAxisSize: MainAxisSize.min,

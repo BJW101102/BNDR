@@ -15,7 +15,7 @@ class EventDashboard extends StatefulWidget {
 
 class _EventDashboardState extends State<EventDashboard> {
   final EventService _eventService = EventService();
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   final List<Widget> _pages = <Widget>[
     Home(),
@@ -27,7 +27,7 @@ class _EventDashboardState extends State<EventDashboard> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = 0;
+      _selectedIndex = index;
     });
     Navigator.push(
       context,
@@ -35,21 +35,38 @@ class _EventDashboardState extends State<EventDashboard> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Dashboard'),
+        title: Text(
+          'Event Dashboard',
+          style: theme.appBarTheme.titleTextStyle,
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
       ),
-      body: StreamBuilder<List<Map<String,dynamic>>>(
-        stream: Stream.fromFuture(_eventService.getAllUserEvents(userID: FirebaseAuth.instance.currentUser!.uid, eventType: 'accepted')),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: Stream.fromFuture(
+          _eventService.getAllUserEvents(
+            userID: FirebaseAuth.instance.currentUser!.uid,
+            eventType: 'accepted',
+          ),
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: theme.textTheme.bodyMedium,
+              ),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           final events = snapshot.data ?? [];
           return ListView.builder(
@@ -57,9 +74,15 @@ class _EventDashboardState extends State<EventDashboard> {
             itemBuilder: (context, index) {
               final event = events[index];
               return ListTile(
-                leading: Icon(Icons.event),
-                title: Text(event['eventName']),
-                subtitle: Text('${event['date']} at ${event['time']}'),
+                leading: const Icon(Icons.event),
+                title: Text(
+                  event['eventName'],
+                  style: theme.textTheme.bodyLarge,
+                ),
+                subtitle: Text(
+                  '${event['date']} at ${event['time']}',
+                  style: theme.textTheme.bodyMedium,
+                ),
               );
             },
           );
@@ -88,10 +111,12 @@ class _EventDashboardState extends State<EventDashboard> {
             label: 'Account',
           ),
         ],
-        currentIndex: 1,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
+        backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

@@ -14,7 +14,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
 
   final List<Widget> _pages = <Widget>[
     Home(),
@@ -36,11 +36,16 @@ class _AccountState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Account Info'),
+        title: Text(
+          'Account Info',
+          style: theme.appBarTheme.titleTextStyle,
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,29 +54,32 @@ class _AccountState extends State<AccountPage> {
           children: <Widget>[
             Text(
               'Username:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               user?.uid ?? 'No username',
-              style: TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Email:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              //FirebaseAuth.instance.currentUser!.email!.toString(),
               user?.email ?? 'No email',
-              style: TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -93,14 +101,17 @@ class _AccountState extends State<AccountPage> {
             label: 'Account',
           ),
         ],
-        currentIndex: 4, // Pass the selected index
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped, // Pass the onItemTapped function
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
+        backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
 }
+
 
 // class AccountPage extends StatelessWidget {
 //   //final String username;

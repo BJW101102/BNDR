@@ -184,7 +184,7 @@ class Login extends StatelessWidget {
         'Sign In',
         style: GoogleFonts.raleway(
             textStyle: const TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 18)),
       ),

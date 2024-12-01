@@ -36,43 +36,98 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final screenHeight = MediaQuery.of(context).size.height; // Get screen height
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'BNDR',
-                style: GoogleFonts.raleway(
-                    textStyle: const TextStyle(
-                        color: Colors.black,
+              // Top text section
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'BNDR',
+                      style: theme.textTheme.headlineLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 40)),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                FirebaseAuth.instance.currentUser!.email!.toString(),
-                style: GoogleFonts.raleway(
-                    textStyle: const TextStyle(
-                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      FirebaseAuth.instance.currentUser?.email ?? 'No email available',
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20)),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(
-                height: 30,
+              const SizedBox(height: 30),
+
+              // "Places Near You" section
+              Text(
+                'Places Near You',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
               ),
-              // _logout(context)
+              const SizedBox(height: 10),
+
+              // Horizontal scrolling list of cards
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    // Card 1
+                    buildCard(
+                      theme,
+                      screenHeight,
+                      icon: Icons.liquor,
+                      title: 'Fred\'s in Tigerland',
+                      description: 'Fred\'s in Tigerland is a lively bar and nightclub near LSU, known for its vibrant nightlife and energetic atmosphere. A favorite among college students and locals, it offers themed nights, live music, and DJ sets, along with a spacious outdoor patio.',
+                      imagePath: 'assets/freds.jpg',
+                      stars: 5,
+                      priceLevel: 2,
+                    ),
+                    // Card 2
+                    buildCard(
+                      theme,
+                      screenHeight,
+                      icon: Icons.music_note_outlined,
+                      title: 'Chelsea\'s Live',
+                      description: 'Chelsea\'s Live is a premier music venue in Baton Rouge, offering a dynamic space for live performances by local and touring artists and known for its excellent acoustics and intimate setting.',
+                      imagePath: 'assets/chelseas.jpg',
+                      stars: 4.0,
+                      priceLevel: 2,
+                    ),
+                    // Card 3
+                    buildCard(
+                      theme,
+                      screenHeight,
+                      icon: Icons.restaurant,
+                      title: 'Raising Canes',
+                      description: 'Raising Cane\'s Chicken Fingers is a casual fast-food spot famous for its fresh, hand-battered chicken fingers, crinkle-cut fries, buttery Texas toast, and signature Cane\'s Sauce. ',
+                      imagePath: 'assets/canes.png',
+                      stars: 5,
+                      priceLevel: 3,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -94,13 +149,130 @@ class _HomeState extends State<Home> {
             label: 'Account',
           ),
         ],
-        currentIndex: 0, // Pass the selected index
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped, // Pass the onItemTapped function
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
+        backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
+
+  Widget buildCard(
+    ThemeData theme,
+    double screenHeight, {
+    required IconData icon,
+    required String title,
+    required String description,
+    required String imagePath,
+    required double stars,
+    required int priceLevel,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: Card(
+        elevation: 3,
+        child: SizedBox(
+          height: screenHeight - 150,
+          width: 200,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top icon and title
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      icon,
+                      size: 40,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Image placeholder
+              Container(
+                height: 300, // Smaller image height
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                width: double.infinity,
+              ),
+              // Bottom description
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  description,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              // Stars and Price Level
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    // Stars
+                    Row(
+                      children: List.generate(5, (index) {
+                        return Icon(
+                          index < stars.round()
+                              ? Icons.star
+                              : Icons.star_border,
+                          size: 16,
+                          color: theme.colorScheme.primary,
+                        );
+                      }),
+                    ),
+                    const Spacer(),
+                    // Price Level ($ signs)
+                    Row(
+                      children: List.generate(4, (index) {
+                        return Text(
+                          index < priceLevel ? '\$' : '',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.primary,
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              // Learn More Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Handle button action
+                  },
+                  child: Text('Learn More'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
   // Widget _logout(BuildContext context) {
   //   return ElevatedButton(
   //     style: ElevatedButton.styleFrom(
@@ -117,4 +289,3 @@ class _HomeState extends State<Home> {
   //     child: const Text("Sign Out"),
   //   );
   // }
-}
