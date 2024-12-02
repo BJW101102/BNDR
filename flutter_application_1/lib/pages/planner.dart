@@ -11,6 +11,7 @@ class Planner extends StatefulWidget {
   final String eventName;
   final DateTime selectedDate;
   final TimeOfDay selectedTime;
+  //passing values through flow for storage
   const Planner({
     Key? key,
     required this.eventName,
@@ -74,7 +75,7 @@ class _PlannerState extends State<Planner> {
   }
 
   //1)move camerea to selected location and 2) if add button was pressed
-  //automatically adds this place to the planner list
+  //adds this place to the planner list
   void placeSelection(String input, bool add) async {
     const String apiKey = "AIzaSyD_eIXoIx5zyyzehtsKDcjiaAyjaZm5A0A";
     try {
@@ -148,7 +149,7 @@ class _PlannerState extends State<Planner> {
     }
   }
 
-  //diaglog box for edit button
+  //diaglog box for edit button allows users to make notes about a location
   void _showEditDialog(int index) {
     final TextEditingController _extraInfoController = TextEditingController();
 
@@ -196,7 +197,8 @@ class _PlannerState extends State<Planner> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous page
+            //navigate back to the previous page
+            Navigator.pop(context); 
           },
         ),
         actions: [
@@ -213,7 +215,7 @@ class _PlannerState extends State<Planner> {
                           selectedTime: widget.selectedTime,
                           locationIDs: locationIDs,
                         )),
-              ); // Navigate to the review page
+              ); //navigate to the review page
             },
           ),
         ],
@@ -223,6 +225,7 @@ class _PlannerState extends State<Planner> {
           SizedBox(
             height: MediaQuery.of((context)).size.height,
             width: MediaQuery.of(context).size.width,
+            //google map for visualization
             child: GoogleMap(
               myLocationButtonEnabled: false,
               markers: markers,
@@ -244,6 +247,7 @@ class _PlannerState extends State<Planner> {
               padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
               child: Column(
                 children: [
+                  //text box that returns autocomplete suggestions based on places API
                   TextField(
                     autocorrect: false,
                     controller: searchController,
@@ -260,6 +264,7 @@ class _PlannerState extends State<Planner> {
                     child: Container(
                       height: 200,
                       color: Colors.white.withOpacity(0.9),
+                      //drop down list of suggested places
                       child: ListView.builder(
                         itemCount: listOfLocations.length < 5
                             ? listOfLocations.length
@@ -270,6 +275,7 @@ class _PlannerState extends State<Planner> {
                             children: [
                               Expanded(
                                 child: TextButton(
+                                  //text button moves camera to desired location and places a pin on the map
                                   onPressed: () {
                                     placeSelection(
                                         listOfLocations[index]["place_id"],
@@ -279,12 +285,13 @@ class _PlannerState extends State<Planner> {
                                       listOfLocations[index]["description"]),
                                 ),
                               ),
+                              //add button adds this place to the running list of locations
+                              //included in this event
                               IconButton(
                                 icon: const Icon(Icons.add),
                                 onPressed: () {
                                   placeSelection(
                                       listOfLocations[index]["place_id"], true);
-                                  // STORE PLACE_ID
                                 },
                               ),
                             ],
@@ -301,14 +308,14 @@ class _PlannerState extends State<Planner> {
             bottom: 0,
             left: 0,
             right: 0,
-            // Bottom half of the screen
             child: Container(
               color: Colors.grey[200],
               height: MediaQuery.of(context).size.height / 3,
               child: ListView.builder(
                 itemCount: selectedLocations.length,
                 itemBuilder: (context, index) {
-                  // Each entry gets its own container to store information
+                  //each entry gets its own container to display information
+                  //i.e. name, address, rating, and extra information the user may decide to add
                   return Container(
                     margin:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -333,7 +340,6 @@ class _PlannerState extends State<Planner> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Display name of location
                               Text(
                                 "Location: " +
                                     selectedLocations[index]["result"]["name"],
@@ -341,7 +347,6 @@ class _PlannerState extends State<Planner> {
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
-                              // Display address
                               Text(
                                 "Address: " +
                                     (selectedLocations[index]["result"]
@@ -358,7 +363,6 @@ class _PlannerState extends State<Planner> {
                                         "No Rating"),
                                 style: TextStyle(color: Colors.grey[800]),
                               ),
-                              // Display extra info if it exists
                               if (selectedLocations[index]
                                   .containsKey('extraInfo'))
                                 Padding(
@@ -372,20 +376,19 @@ class _PlannerState extends State<Planner> {
                             ],
                           ),
                         ),
-                        // Edit button
+                        //button to add extra information, e.g. time to arrive
                         IconButton(
                           icon: const Icon(Icons.edit, color: Colors.black),
                           onPressed: () {
                             _showEditDialog(index);
                           },
                         ),
-                        // Remove button
+                        //remove this place from the event plan
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
                               selectedLocations.removeAt(index);
-                              // REMOVE PLACE_ID
                             });
                           },
                         ),
