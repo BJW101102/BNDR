@@ -17,10 +17,10 @@ displayed at the bottom of this page, and users may add notes to each individual
 Lastly, the third page is where the creator can choose which of their friends to invite to their BNDR, and
 send event information to each invitee.
 
-Friends Page: The Friend page is the hub for connecting to your friends via BNDR. This page displays the 
+- Friends Page: The Friend page is the hub for connecting to your friends via BNDR. This page displays the 
 user's incoming and outgoing friend requests, as well as a list of their current friends.
 
-Account Info: The Account Info page is where a user can view typical account information like their username and email address
+- Account Info: The Account Info page is where a user can view typical account information like their username and email address
 
 # Backend Services
 All data was stored in Google's `Firebase` realtime database. The following features are implemented (Also mention `Google Maps API`)
