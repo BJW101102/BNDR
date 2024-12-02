@@ -145,19 +145,19 @@ class _FriendPageState extends State<FriendPage> {
           children: [
             Text(
               'Incoming Friend Requests',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             _buildFriendCards(futureList: _incomingFriends, isIncoming: true),
             const SizedBox(height: 20),
             Text(
               'Outgoing Friend Requests',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             _buildFriendCards(futureList: _outgoingFriends, isOutgoing: true),
             const SizedBox(height: 20),
             Text(
               'Current Friends',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             _buildFriendCards(futureList: _currentFriends),
           ],

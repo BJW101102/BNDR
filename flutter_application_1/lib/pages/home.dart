@@ -204,7 +204,7 @@ class _HomeState extends State<Home> {
               ),
               // Image placeholder
               Container(
-                height: 300, // Smaller image height
+                height: 100, // Smaller image height
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(imagePath),
