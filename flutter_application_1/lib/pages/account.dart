@@ -60,7 +60,7 @@ class _AccountState extends State<AccountPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              user?.uid ?? 'No username',
+              user?.displayName ?? 'No username',
               style: theme.textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
