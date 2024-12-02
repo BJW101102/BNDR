@@ -1,15 +1,18 @@
-# BNDR ~ An app for (insert cool moto here)
+# BNDR ~ An app for planning the ideal night out
 
 # Technologies:  
-- Mention all technologies
+- Flutter 
+- Firebase (Firestore and FireAuth)
 
 # Main Pages
-- Home Page:
-- Event Page:
-- Planner: 
+- Home Page: A place where a user is able to browse nearby locations and perhaps even add them to an event if they see fit.
+- My Events Page: Here is where a user can view and see details of upcoming events.
+- Planner: This is where the magic happens. Here is where a user starts a BNDR. Date and time is decided here. Once saved, a user is able to browse locations via an interactive map and add them to the itinerary.
+- Friends: The social aspect of the app is with the friends page. Here users are able to view and add friends. These friends are later used as invitees of BNDRs a user creates.
+- Account: Where a user can view simple information about their account. 
 
 # Backend Services
-All data was stored in Google's `Firebase` realtime database. The following  features are implemented (Also mention `Google Maps API`)
+All data was stored in Google's `Firebase` realtime database. The following features are implemented (Also mention `Google Maps API`)
 - Authentication: Firebase authentication ...
 - GeoLocation: Google places..
 - Friend Request Handling: Firebase...
