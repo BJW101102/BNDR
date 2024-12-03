@@ -45,6 +45,7 @@ class _AccountState extends State<AccountPage> {
           'Account Info',
           style: theme.appBarTheme.titleTextStyle,
         ),
+        automaticallyImplyLeading: false,
         backgroundColor: theme.appBarTheme.backgroundColor,
       ),
       body: Padding(

@@ -45,6 +45,7 @@ class _EventDashboardState extends State<EventDashboard> {
           'Event Dashboard',
           style: theme.appBarTheme.titleTextStyle,
         ),
+        automaticallyImplyLeading: false,
         backgroundColor: theme.appBarTheme.backgroundColor,
       ),
       body: StreamBuilder<List<Map<String, dynamic>>>(

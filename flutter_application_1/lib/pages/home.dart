@@ -53,11 +53,9 @@ class _HomeState extends State<Home> {
                   children: [
                     Text(
                       'BNDR',
-                      style: GoogleFonts.museoModerno(
-                      textStyle: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 32)),
+                      style: theme.textTheme.headlineLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 10),
@@ -83,7 +81,7 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(height: 10),
 
-              //"Places near you" cards
+              // Horizontal scrolling list of cards
               Expanded(
                 child: ListView(
                   scrollDirection: Axis.horizontal,
@@ -161,7 +159,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-  //card
   Widget buildCard(
     ThemeData theme,
     double screenHeight, {
@@ -192,7 +189,6 @@ class _HomeState extends State<Home> {
                       size: 40,
                       color: theme.colorScheme.primary,
                     ),
-
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -208,7 +204,7 @@ class _HomeState extends State<Home> {
               ),
               // Image placeholder
               Container(
-                height: 100,
+                height: 100, // Smaller image height
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(imagePath),
@@ -264,7 +260,7 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    //no action for now
+                    // Handle button action
                   },
                   child: Text('Learn More'),
                 ),

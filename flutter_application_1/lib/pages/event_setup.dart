@@ -124,6 +124,7 @@ class _EventPageState extends State<EventPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Create Event'),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
   child: Padding(

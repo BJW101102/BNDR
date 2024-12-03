@@ -194,6 +194,7 @@ class _PlannerState extends State<Planner> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Planner"),
+        automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

@@ -38,6 +38,7 @@ class ReviewPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Invite Friends'),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
