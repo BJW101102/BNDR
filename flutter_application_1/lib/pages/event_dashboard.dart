@@ -35,90 +35,140 @@ class _EventDashboardState extends State<EventDashboard> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+@override
+Widget build(BuildContext context) {
+  final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Event Dashboard',
-          style: theme.appBarTheme.titleTextStyle,
-        ),
-        automaticallyImplyLeading: false,
-        backgroundColor: theme.appBarTheme.backgroundColor,
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        'Event Dashboard',
+        style: theme.appBarTheme.titleTextStyle,
       ),
-      body: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: Stream.fromFuture(
-          _eventService.getAllUserEvents(
-            userID: FirebaseAuth.instance.currentUser!.uid,
-            eventType: 'accepted',
-          ),
+      automaticallyImplyLeading: false,
+      backgroundColor: theme.appBarTheme.backgroundColor,
+    ),
+    body: FutureBuilder(
+      future: Future.wait([
+        _eventService.getAllUserEvents(
+          userID: FirebaseAuth.instance.currentUser!.uid,
+          eventType: 'accepted',
         ),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: theme.textTheme.bodyMedium,
-              ),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final events = snapshot.data ?? [];
-          return ListView.builder(
-            itemCount: events.length,
-            itemBuilder: (context, index) {
-              final event = events[index];
-              return ListTile(
-                leading: const Icon(Icons.event),
-                title: Text(
-                  event['eventName'],
-                  style: theme.textTheme.bodyLarge,
-                ),
-                subtitle: Text(
-                  '${event['date']} at ${event['time']}',
-                  style: theme.textTheme.bodyMedium,
-                ),
-              );
-            },
+        _eventService.getAllUserEvents(
+          userID: FirebaseAuth.instance.currentUser!.uid,
+          eventType: 'requested',
+        ),
+      ]),
+      builder: (context, AsyncSnapshot<List<List<Map<String, dynamic>>>> snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: theme.textTheme.bodyMedium,
+            ),
           );
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Event',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Planner',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Friends',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
-        unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
-        backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
-        type: BottomNavigationBarType.fixed,
-      ),
-    );
-  }
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        final acceptedEvents = snapshot.data?[0] ?? [];
+        final requestedEvents = snapshot.data?[1] ?? [];
+
+        return ListView(
+          children: [
+            // Accepted Events Section
+            if (acceptedEvents.isNotEmpty)
+              ListTile(
+                title: Text(
+                  'Accepted Events',
+                  style: theme.textTheme.headlineSmall,
+                ),
+              ),
+            if (acceptedEvents.isNotEmpty)
+              ...acceptedEvents.map((event) {
+                return ListTile(
+                  leading: const Icon(Icons.event),
+                  title: Text(
+                    event['eventName'],
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  subtitle: Text(
+                    '${event['date']} at ${event['time']}',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                );
+              }).toList(),
+
+            // Requested Events Section
+            if (requestedEvents.isNotEmpty)
+              ListTile(
+                title: Text(
+                  'Requested Events',
+                  style: theme.textTheme.headlineSmall,
+                ),
+              ),
+            if (requestedEvents.isNotEmpty)
+              ...requestedEvents.map((event) {
+                return ListTile(
+                  leading: const Icon(Icons.event),
+                  title: Text(
+                    event['eventName'],
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  subtitle: Text(
+                    '${event['date']} at ${event['time']}',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () async {
+                      await _eventService.handleEventRequest(
+                        userID: FirebaseAuth.instance.currentUser!.uid,
+                        eventID: event['id'],
+                        accept: true,
+                      );
+                      setState(() {}); // Refresh the UI
+                    },
+                    child: const Text('Accept'),
+                  ),
+                );
+              }).toList(),
+          ],
+        );
+      },
+    ),
+    bottomNavigationBar: BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.calendar_today),
+          label: 'Event',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          label: 'Planner',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people),
+          label: 'Friends',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: 'Account',
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
+      unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
+      backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
+      type: BottomNavigationBarType.fixed,
+    ),
+  );
+}
 }
