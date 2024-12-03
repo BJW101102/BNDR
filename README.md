@@ -12,7 +12,7 @@ service.
 - NOTE: every machine is different and has different software preinstalled before Flutter so your installation process can be different from ours or your friends'.
 
 # Main Pages
-- Home Page:
+- Home Page: The Home Page is simply a starting place to browse nearby locations.
 
 - Event Page: The Event Dashboard lets users view all of their upcoming BNDRs, including pending invites and
 the events to which they've opted in.
