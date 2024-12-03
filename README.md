@@ -1,7 +1,7 @@
 # BNDR ~ An app for planning the ideal night out
 
 # Technologies:  
-- The core functionality of BNDR is achieved throught the utilization of the Google Maps and Google Places  APIs, as well as the Flutter framework in tandem with the Firebase real time database
+- The core functionality of BNDR is achieved throught the utilization of the Google Maps and Google Places  APIs, as well as the Flutter framework in tandem with the Firebase Firestore database
 service.
 
 # Installation Guide
@@ -30,14 +30,48 @@ user's incoming and outgoing friend requests, as well as a list of their current
 - Account Info: The Account Info page is where a user can view typical account information like their username and email address
 
 # Backend Services
-All data was stored in Google's `Firebase` realtime database. The following features are implemented (Also mention `Google Maps API`)
-- Authentication: Firebase authentication ...
-- GeoLocation: Google places..
-- Friend Request Handling: Firebase...
-- Event Request Handling: Firebase...
-- Event Creation: Firebase..
+All data was stored in Google's `Firebase` Firestore database. The following features are implemented (Also mention `Google Maps API`)
+- Authentication: Firebase authentication (using email and password)
+- GeoLocation Library: uses Longitude and Latitude of device to pin point a user's location
+- Google places: Google API that uses the user's location to show various nearby locations.
+- All user transactions: Firebase Firestore Database. (connection with the database to send and retrieve all data about a user including events, friends, and sensitive information like user ID)
 
-    ## Database Schema:
-    Insert Schema Here, mention noSQL. 
-    - User!
-    - Events!
+# Database Schema:
+
+## Event Data Structure
+
+```json
+{
+  "owner": "userID",
+  "eventName": "eventName",
+  "locations": "locationIDs",
+  "time": "time",
+  "date": "date",
+  "participants": {
+    "requested": [],
+    "accepted": [],
+    "declined": []
+  }
+}
+```
+## User Data Structure
+
+```json
+{
+  "userID": "userID",
+  "firstName": "firstName",
+  "lastName": "lastName",
+  "username": "username",
+  "email": "email",
+  "friends": {
+    "incoming": [],
+    "outgoing": [],
+    "current": []
+  },
+  "events": {
+    "requested": [],
+    "accepted": [],
+    "previous": []
+  }
+}
+```
