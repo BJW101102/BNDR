@@ -10,7 +10,6 @@ import '../services/event_service.dart';
 import 'package:intl/intl.dart';
 
 class ReviewPage extends StatelessWidget {
-  //all the data we need from previous planner pages
   final List<dynamic> selectedLocations;
   final List<String> locationIDs;
   final String eventName;
@@ -31,7 +30,7 @@ class ReviewPage extends StatelessWidget {
     String userID = FirebaseAuth.instance.currentUser!.uid;
     final FriendService friendService = FriendService();
     final EventService eventService = EventService();
-    List<String?> inviteList = [];
+    Set<String> inviteList = {}; // Use a set to track invited friends
     final formattedDate = DateFormat.yMMMd().format(selectedDate);
     final formattedTime = selectedTime.format(context);
     Map<bool, String> eventID = {false: ''};
@@ -46,8 +45,7 @@ class ReviewPage extends StatelessWidget {
             child: FutureBuilder<List<Map<String, String>>>(
               future: friendService.getFriendTypes(
                 userID: userID,
-                friendType:
-                    'current',
+                friendType: 'current',
               ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -60,20 +58,25 @@ class ReviewPage extends StatelessWidget {
                     itemCount: friends.length,
                     itemBuilder: (context, index) {
                       final friend = friends[index];
-                      return ListTile(
-                        title: Text(friend['name'] ?? 'No Name'),
-                        subtitle: Text(friend['id'] ?? ''),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            inviteList.add(friend['name']);//TODO change to ID later
-                            print("List: $inviteList");
-                          },
-                          child: Text(
-                            inviteList.contains(friend['id'])
-                                ? 'Invited'
-                                : 'Invite',
-                          ),
-                        ),
+                      final friendId = friend['id'] ?? '';
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return ListTile(
+                            title: Text(friend['name'] ?? 'No Name'),
+                            subtitle: Text(friendId),
+                            trailing: inviteList.contains(friendId)
+                                ? Icon(Icons.check, color: Colors.green)
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        inviteList.add(friendId);
+                                      });
+                                      print("Invited: $inviteList");
+                                    },
+                                    child: Text('Invite'),
+                                  ),
+                          );
+                        },
                       );
                     },
                   );
@@ -87,7 +90,7 @@ class ReviewPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () async {
-                //create the event in the database
+                // Create the event in the database
                 eventID = await eventService.createEvent(
                   userID: userID,
                   eventName: eventName,
@@ -95,14 +98,27 @@ class ReviewPage extends StatelessWidget {
                   date: formattedDate,
                   time: formattedTime,
                 );
-                inviteList.forEach((name){
-                  eventService.sendEventRequest(friendName: name as String, eventID: eventID.values.first);
+
+                // Send event requests to invited friends
+                inviteList.forEach((friendId) {
+                  eventService.sendEventRequest(
+                    friendName:
+                        friendId, // Change to the appropriate friend identifier
+                    eventID: eventID.values.first,
+                  );
                 });
-                
+
+                // Navigate back to the home page
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Home()), // Replace `Home()` with your home page widget
+                  (route) => false, // Remove all previous routes
+                );
               },
               style: ElevatedButton.styleFrom(
-                minimumSize:
-                    Size(double.infinity, 60),
+                minimumSize: Size(double.infinity, 60),
               ),
               child: Text(
                 'Start Your BNDR',

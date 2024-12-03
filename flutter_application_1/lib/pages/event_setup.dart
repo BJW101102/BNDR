@@ -125,13 +125,16 @@ class _EventPageState extends State<EventPage> {
       appBar: AppBar(
         title: Text('Create Event'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: Center(
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // Ensure the Column takes minimum vertical space
+        children: [
+
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Event Name',
@@ -186,6 +189,7 @@ class _EventPageState extends State<EventPage> {
             ],
           ),
         ),
+      ),
       ),
       // Navigation bar to switch between pages
       bottomNavigationBar: BottomNavigationBar(
