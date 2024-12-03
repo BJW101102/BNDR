@@ -40,7 +40,6 @@ All data was stored in Google's `Firebase` Firestore database. The following fea
 
 ## Event Data Structure
 
-### JSON Representation
 ```json
 {
   "owner": "userID",
@@ -55,9 +54,8 @@ All data was stored in Google's `Firebase` Firestore database. The following fea
   }
 }
 ```
-# User Data Structure
+## User Data Structure
 
-## JSON Representation
 ```json
 {
   "userID": "userID",
