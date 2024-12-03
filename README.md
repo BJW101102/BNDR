@@ -4,6 +4,13 @@
 - The core functionality of BNDR is achieved throught the utilization of the Google Maps and Google Places  APIs, as well as the Flutter framework in tandem with the Firebase real time database
 service.
 
+# Installation Guide
+- Install the most up-to-date version of the Flutter SDK for your specific system. This is a lengthy and confusing process so be sure to follow instructions carefully and completely.
+  - Here is the URL to install the latest version of the Flutter SDK: https://docs.flutter.dev/get-started/install
+- We recommend using Microsoft's Visual Studio Code and an Apple machine as Apple allows you to open an IPhone Simulator with Xcode. You can also use Andriod Studio on Windows but our testing is extremely limited with that and normally use Chrome as our testing vessle on Windows.
+- Once Flutter is installed and you have ran the `flutter doctor` command with no errors, you are set to go.
+- NOTE: every machine is different and has different software preinstalled before Flutter so your installation process can be different from ours or your friends'.
+
 # Main Pages
 - Home Page:
 
