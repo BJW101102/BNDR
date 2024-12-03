@@ -21,12 +21,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'BNDR',
-      theme: ThemeData(
-      useMaterial3: true, // Enable Material 3 design
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+  return MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'BNDR',
+    theme: ThemeData(
+      useMaterial3: false,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.amber,
+      ).copyWith(
+        primary: Colors.amber,
+        secondary: Colors.amberAccent,
+        surface: Colors.white,
+        error: Colors.red,
+      ),
       textTheme: GoogleFonts.ralewayTextTheme(
         TextTheme(
           displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
@@ -48,11 +55,11 @@ class MyApp extends StatelessWidget {
         centerTitle: true,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        selectedItemColor: Colors.amber,
+        selectedItemColor: Colors.amberAccent,
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
         elevation: 8,
-  ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.amber,
@@ -61,9 +68,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
     ),
-      home: const MainScreen(),
-    );
-  }
+    home: const MainScreen(),
+  );
+}
 }
 
 class MainScreen extends StatefulWidget {

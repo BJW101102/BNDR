@@ -81,7 +81,7 @@ class Login extends StatelessWidget {
               Center(
                 child: Text(
                   'BNDR',
-                  style: GoogleFonts.raleway(
+                  style: GoogleFonts.museoModerno(
                       textStyle: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
