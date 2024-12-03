@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/services/event_service.dart'; // Import the EventService
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
-import 'package:flutter_application_1/pages/event_setup.dart'; // Import the EventPage
-import 'package:flutter_application_1/pages/friends.dart'; // Import the FriendsPage
-import 'package:flutter_application_1/pages/account.dart'; // Import the AccountPage
-import 'package:flutter_application_1/pages/home.dart'; // Import the HomePage
+import 'package:flutter_application_1/services/event_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/pages/event_setup.dart';
+import 'package:flutter_application_1/pages/friends.dart';
+import 'package:flutter_application_1/pages/account.dart';
+import 'package:flutter_application_1/pages/home.dart';
 
 class EventDashboard extends StatefulWidget {
   const EventDashboard({Key? key}) : super(key: key);
@@ -79,7 +79,7 @@ Widget build(BuildContext context) {
 
         return ListView(
           children: [
-            // Accepted Events Section
+            // View accepted events
             if (acceptedEvents.isNotEmpty)
               ListTile(
                 title: Text(
@@ -102,7 +102,7 @@ Widget build(BuildContext context) {
                 );
               }).toList(),
 
-            // Requested Events Section
+            // Requested events to be accepted
             if (requestedEvents.isNotEmpty)
               ListTile(
                 title: Text(
@@ -129,7 +129,7 @@ Widget build(BuildContext context) {
                         eventID: event['id'],
                         accept: true,
                       );
-                      setState(() {}); // Refresh the UI
+                      setState(() {});
                     },
                     child: const Text('Accept'),
                   ),
