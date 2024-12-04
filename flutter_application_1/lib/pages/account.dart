@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/login.dart';
 import 'event_dashboard.dart';
 import 'event_setup.dart';
 import 'friends.dart';
 import 'home.dart';
-import 'package:flutter_application_1/services/auth_service.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -32,6 +32,22 @@ class _AccountState extends State<AccountPage> {
       context,
       MaterialPageRoute(builder: (context) => _pages[index]),
     );
+  }
+
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Navigate back to the login screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    } catch (e) {
+      // Show an error message if the logout fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error signing out: $e')),
+      );
+    }
   }
 
   @override
@@ -76,6 +92,18 @@ class _AccountState extends State<AccountPage> {
               user?.email ?? 'No email',
               style: theme.textTheme.bodyMedium,
             ),
+            const SizedBox(height: 32),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => _signOut(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // Optional: Make it visually distinct
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 12.0),
+                ),
+                child: const Text('Logout', style: TextStyle(fontSize: 16)),
+              ),
+            ),
           ],
         ),
       ),
@@ -112,51 +140,3 @@ class _AccountState extends State<AccountPage> {
     );
   }
 }
-
-
-// class AccountPage extends StatelessWidget {
-//   //final String username;
-//   //final String email;
-
-//   //AccountPage({required this.username, required this.email});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final user = FirebaseAuth.instance.currentUser;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Account Info'),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: <Widget>[
-//             Text(
-//               'Username:',
-//               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-//             ),
-//             SizedBox(height: 8),
-//             Text(
-//               //FirebaseAuth.instance.currentUser!.displayName!,
-//               user?.displayName ?? 'No username',
-//               style: TextStyle(fontSize: 16),
-//             ),
-//             SizedBox(height: 16),
-//             Text(
-//               'Email:',
-//               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-//             ),
-//             SizedBox(height: 8),
-//             Text(
-//               //FirebaseAuth.instance.currentUser!.email!.toString(),
-//               user?.email ?? 'No email',
-//               style: TextStyle(fontSize: 16),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
