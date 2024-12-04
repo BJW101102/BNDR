@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/pages/event_dashboard.dart';
 import '../services/friend_service.dart';
-import 'event_dashboard.dart';
-import 'event_setup.dart';
-import 'account.dart';
-import 'home.dart';
-import 'friends.dart';
 import '../services/event_service.dart';
 import 'package:intl/intl.dart';
 
@@ -46,8 +42,7 @@ class ReviewPage extends StatelessWidget {
             child: FutureBuilder<List<Map<String, String>>>(
               future: friendService.getFriendTypes(
                 userID: userID,
-                friendType:
-                    'current',
+                friendType: 'current',
               ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -62,14 +57,17 @@ class ReviewPage extends StatelessWidget {
                       final friend = friends[index];
                       return ListTile(
                         title: Text(friend['name'] ?? 'No Name'),
-                        subtitle: Text(friend['id'] ?? ''),
                         trailing: ElevatedButton(
                           onPressed: () {
-                            inviteList.add(friend['name']);//TODO change to ID later
-                            print("List: $inviteList");
+                            final friendId = friend['name']
+                                .toString()
+                                .trim(); // Ensure it's a String and clean
+                            if (!inviteList.contains(friendId)) {
+                              inviteList.add(friendId);
+                            }
                           },
                           child: Text(
-                            inviteList.contains(friend['id'])
+                            inviteList.contains(friend['name'])
                                 ? 'Invited'
                                 : 'Invite',
                           ),
@@ -95,14 +93,18 @@ class ReviewPage extends StatelessWidget {
                   date: formattedDate,
                   time: formattedTime,
                 );
-                inviteList.forEach((name){
-                  eventService.sendEventRequest(friendName: name as String, eventID: eventID.values.first);
+                inviteList.forEach((name) {
+                  eventService.sendEventRequest(
+                      friendName: name as String,
+                      eventID: eventID.values.first);
                 });
-                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EventDashboard()),
+                );
               },
               style: ElevatedButton.styleFrom(
-                minimumSize:
-                    Size(double.infinity, 60),
+                minimumSize: Size(double.infinity, 60),
               ),
               child: Text(
                 'Start Your BNDR',
